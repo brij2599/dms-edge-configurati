@@ -37,7 +37,13 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [connecting]);
 
+  const handlePlusButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent canvas click handler
+    openNodeLibrary();
+  };
+
   const handleCanvasClick = (e: React.MouseEvent) => {
+    // Check if click is on canvas background (not on any child elements)
     if (e.target === e.currentTarget) {
       selectNode(null);
       closeNodeLibrary();
@@ -130,7 +136,7 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
             <Button
-              onClick={openNodeLibrary}
+              onClick={handlePlusButtonClick}
               variant="ghost"
               className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 hover:bg-muted/80"
             >
@@ -147,7 +153,7 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
       
       {/* Floating Add Node Button */}
       <Button
-        onClick={openNodeLibrary}
+        onClick={handlePlusButtonClick}
         size="icon"
         className="absolute bottom-6 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-shadow z-50"
       >
