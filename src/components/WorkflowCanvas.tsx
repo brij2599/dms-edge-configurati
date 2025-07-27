@@ -1,4 +1,6 @@
 import React from 'react';
+import { Plus } from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
 import { WorkflowNodeComponent } from './WorkflowNode';
 import { Connections } from './Connections';
 import { useWorkflowContext } from '@/contexts/WorkflowContext';
@@ -14,7 +16,9 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
     addNode, 
     updateNode, 
     selectNode,
-    addConnection 
+    addConnection,
+    closeNodeLibrary,
+    toggleNodeLibrary 
   } = useWorkflowContext();
   
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -36,6 +40,7 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
   const handleCanvasClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       selectNode(null);
+      closeNodeLibrary();
       if (connecting) {
         setConnecting(null);
       }
@@ -124,19 +129,30 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
       {workflow.nodes.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
-            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-muted-foreground">
-                <path d="M12 5v14m-7-7h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </div>
+            <Button
+              onClick={toggleNodeLibrary}
+              variant="ghost"
+              className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 hover:bg-muted/80"
+            >
+              <Plus size={24} className="text-muted-foreground" />
+            </Button>
             <h3 className="text-lg font-medium text-foreground mb-2">Start Building Your Workflow</h3>
             <p className="text-muted-foreground max-w-md">
-              Drag nodes from the library to the canvas to begin creating your ETL pipeline. 
+              Click the plus button to add nodes and begin creating your ETL pipeline. 
               Hold Ctrl and click nodes to connect them.
             </p>
           </div>
         </div>
       )}
+      
+      {/* Floating Add Node Button */}
+      <Button
+        onClick={toggleNodeLibrary}
+        size="icon"
+        className="absolute bottom-6 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-shadow z-50"
+      >
+        <Plus size={24} />
+      </Button>
     </div>
   );
 }

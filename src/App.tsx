@@ -11,7 +11,8 @@ function WorkflowBuilder() {
   const { 
     workflow, 
     selectedNodeId,
-    draggedNode, 
+    draggedNode,
+    isNodeLibraryOpen,
     startDrag, 
     endDrag,
     selectNode
@@ -76,7 +77,9 @@ function WorkflowBuilder() {
           />
         )}
         
-        <NodeLibrary onDragStart={handleDragStart} />
+        {isNodeLibraryOpen && (
+          <NodeLibrary onDragStart={handleDragStart} />
+        )}
       </div>
       
       <Toaster position="bottom-right" />
