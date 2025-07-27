@@ -14,10 +14,13 @@ function WorkflowBuilder() {
     selectedNodeId,
     draggedNode,
     isNodeLibraryOpen,
+    connectionSource,
     addNode,
+    addConnection,
     startDrag, 
     endDrag,
-    selectNode
+    selectNode,
+    setConnectionSourceNode
   } = useWorkflowContext();
 
   const selectedNode = selectedNodeId 
@@ -28,19 +31,38 @@ function WorkflowBuilder() {
     // Calculate a position in the center of the canvas with some randomization
     const canvasWidth = 800; // Approximate canvas width
     const canvasHeight = 600; // Approximate canvas height
-    const centerX = canvasWidth / 2;
-    const centerY = canvasHeight / 2;
+    let centerX = canvasWidth / 2;
+    let centerY = canvasHeight / 2;
     
-    // Add some randomization to avoid overlapping nodes
-    const offsetX = (Math.random() - 0.5) * 200; // Random offset between -100 and 100
-    const offsetY = (Math.random() - 0.5) * 200;
+    // If we're connecting from another node, position the new node to the right
+    if (connectionSource) {
+      const sourceNode = workflow.nodes.find(node => node.id === connectionSource);
+      if (sourceNode) {
+        centerX = sourceNode.position.x + 200; // Position to the right of source
+        centerY = sourceNode.position.y; // Same height as source
+      }
+    } else {
+      // Add some randomization to avoid overlapping nodes
+      const offsetX = (Math.random() - 0.5) * 200; // Random offset between -100 and 100
+      const offsetY = (Math.random() - 0.5) * 200;
+      centerX += offsetX;
+      centerY += offsetY;
+    }
     
     const position = {
-      x: centerX + offsetX,
-      y: centerY + offsetY
+      x: centerX,
+      y: centerY
     };
     
-    addNode(nodeType, position);
+    const newNodeId = addNode(nodeType, position, !!connectionSource);
+    
+    // If there's a connection source, connect the nodes
+    if (connectionSource && newNodeId) {
+      setTimeout(() => {
+        addConnection(connectionSource, newNodeId);
+        setConnectionSourceNode(null);
+      }, 100);
+    }
     
     // Find the node name for the toast
     const nodeInfo = NODE_TYPES.find(node => node.id === nodeType);

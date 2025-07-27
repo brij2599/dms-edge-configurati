@@ -13,8 +13,9 @@ export function useWorkflow() {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [draggedNode, setDraggedNode] = useState<{ type: string; offset: { x: number; y: number } } | null>(null);
   const [isNodeLibraryOpen, setIsNodeLibraryOpen] = useState(false);
+  const [connectionSource, setConnectionSource] = useState<string | null>(null);
 
-  const addNode = useCallback((type: string, position: { x: number; y: number }) => {
+  const addNode = useCallback((type: string, position: { x: number; y: number }, autoConnect = false) => {
     const newNode: WorkflowNode = {
       id: `node-${Date.now()}`,
       type,
@@ -110,11 +111,16 @@ export function useWorkflow() {
     setIsNodeLibraryOpen(false);
   }, []);
 
+  const setConnectionSourceNode = useCallback((sourceNodeId: string | null) => {
+    setConnectionSource(sourceNodeId);
+  }, []);
+
   return {
     workflow,
     selectedNodeId,
     draggedNode,
     isNodeLibraryOpen,
+    connectionSource,
     addNode,
     updateNode,
     deleteNode,
@@ -125,6 +131,7 @@ export function useWorkflow() {
     endDrag,
     toggleNodeLibrary,
     openNodeLibrary,
-    closeNodeLibrary
+    closeNodeLibrary,
+    setConnectionSourceNode
   };
 }

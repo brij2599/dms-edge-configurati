@@ -13,12 +13,14 @@ interface WorkflowCanvasProps {
 export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) {
   const { 
     workflow, 
+    connectionSource,
     addNode, 
     updateNode, 
     selectNode,
     addConnection,
     closeNodeLibrary,
-    openNodeLibrary 
+    openNodeLibrary,
+    setConnectionSourceNode 
   } = useWorkflowContext();
   
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -63,6 +65,7 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
     if (!isOnNode && !isOnLibrary && !isOnButton && !isOnCard) {
       selectNode(null);
       closeNodeLibrary();
+      setConnectionSourceNode(null); // Clear connection source
       if (connecting) {
         setConnecting(null);
       }
@@ -112,6 +115,12 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
     }
   };
 
+  // Handle adding a connection from a node's plus button
+  const handleAddConnection = (sourceNodeId: string) => {
+    setConnectionSourceNode(sourceNodeId);
+    openNodeLibrary();
+  };
+
   return (
     <div 
       ref={canvasRef}
@@ -143,6 +152,7 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
           onSelect={handleNodeSelect}
           onMove={handleNodeMove}
           onConnectionStart={handleConnectionStart}
+          onAddConnection={handleAddConnection}
         />
       ))}
       

@@ -6,6 +6,7 @@ interface WorkflowContextType {
   selectedNodeId: ReturnType<typeof useWorkflow>['selectedNodeId'];
   draggedNode: ReturnType<typeof useWorkflow>['draggedNode'];
   isNodeLibraryOpen: ReturnType<typeof useWorkflow>['isNodeLibraryOpen'];
+  connectionSource: ReturnType<typeof useWorkflow>['connectionSource'];
   addNode: ReturnType<typeof useWorkflow>['addNode'];
   updateNode: ReturnType<typeof useWorkflow>['updateNode'];
   deleteNode: ReturnType<typeof useWorkflow>['deleteNode'];
@@ -17,6 +18,7 @@ interface WorkflowContextType {
   toggleNodeLibrary: ReturnType<typeof useWorkflow>['toggleNodeLibrary'];
   openNodeLibrary: ReturnType<typeof useWorkflow>['openNodeLibrary'];
   closeNodeLibrary: ReturnType<typeof useWorkflow>['closeNodeLibrary'];
+  setConnectionSourceNode: ReturnType<typeof useWorkflow>['setConnectionSourceNode'];
 }
 
 const WorkflowContext = createContext<WorkflowContextType | null>(null);

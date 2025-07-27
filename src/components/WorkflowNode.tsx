@@ -4,12 +4,14 @@ import { Badge } from '@/components/ui/badge';
 import { WorkflowNode } from '@/lib/workflow-types';
 import { NODE_TYPES } from '@/lib/workflow-types';
 import * as PhosphorIcons from '@phosphor-icons/react';
+import { Plus } from '@phosphor-icons/react';
 
 interface WorkflowNodeComponentProps {
   node: WorkflowNode;
   onSelect: (nodeId: string) => void;
   onMove: (nodeId: string, position: { x: number; y: number }) => void;
   onConnectionStart?: (nodeId: string, e: React.MouseEvent) => void;
+  onAddConnection?: (sourceNodeId: string) => void;
   style?: React.CSSProperties;
 }
 
@@ -18,6 +20,7 @@ export function WorkflowNodeComponent({
   onSelect, 
   onMove,
   onConnectionStart,
+  onAddConnection,
   style 
 }: WorkflowNodeComponentProps) {
   const nodeType = NODE_TYPES.find(type => type.id === node.type);
@@ -85,9 +88,11 @@ export function WorkflowNodeComponent({
     return 'border-gray-300';
   };
 
-  const handleContextMenu = (e: React.MouseEvent) => {
-    if (onConnectionStart) {
-      onConnectionStart(node.id, e);
+  const handleAddConnection = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onAddConnection) {
+      onAddConnection(node.id);
     }
   };
 
@@ -150,6 +155,21 @@ export function WorkflowNodeComponent({
             </div>
           </div>
         )}
+      </div>
+
+      {/* Connection Line with Plus Button */}
+      <div className="absolute left-[112px] top-[10px]">
+        {/* Horizontal line extending from the output port */}
+        <div className="w-16 h-0.5 bg-gray-400" />
+        
+        {/* Plus button at the end of the line */}
+        <div
+          className="absolute top-[-16px] left-[56px] w-8 h-8 bg-gray-200 hover:bg-gray-300 border-2 border-gray-400 rounded-md flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110"
+          onClick={handleAddConnection}
+          title="Add connected node"
+        >
+          <Plus size={16} className="text-gray-600" />
+        </div>
       </div>
 
       {/* Node Label */}
