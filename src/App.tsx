@@ -20,7 +20,8 @@ function WorkflowBuilder() {
     startDrag, 
     endDrag,
     selectNode,
-    setConnectionSourceNode
+    setConnectionSourceNode,
+    closeNodeLibrary
   } = useWorkflowContext();
 
   const selectedNode = selectedNodeId 
@@ -58,11 +59,16 @@ function WorkflowBuilder() {
     
     // If there's a connection source, connect the nodes immediately
     if (connectionSource && newNodeId) {
-      // Add connection immediately after node creation
-      addConnection(connectionSource, newNodeId);
-      // Clear the connection source
-      setConnectionSourceNode(null);
+      // Use setTimeout to ensure the node is added to the workflow before creating connection
+      setTimeout(() => {
+        addConnection(connectionSource, newNodeId);
+        // Clear the connection source
+        setConnectionSourceNode(null);
+      }, 0);
     }
+    
+    // Close the node library after adding a node
+    closeNodeLibrary();
     
     // Find the node name for the toast
     const nodeInfo = NODE_TYPES.find(node => node.id === nodeType);

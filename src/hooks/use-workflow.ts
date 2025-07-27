@@ -52,24 +52,26 @@ export function useWorkflow() {
   }, []);
 
   const addConnection = useCallback((source: string, target: string) => {
-    // Prevent duplicate connections
-    const exists = workflow.connections.some(
-      conn => conn.source === source && conn.target === target
-    );
-    
-    if (exists) return;
+    setWorkflow(prev => {
+      // Prevent duplicate connections using current state
+      const exists = prev.connections.some(
+        conn => conn.source === source && conn.target === target
+      );
+      
+      if (exists) return prev;
 
-    const newConnection: NodeConnection = {
-      id: `connection-${Date.now()}`,
-      source,
-      target
-    };
+      const newConnection: NodeConnection = {
+        id: `connection-${Date.now()}`,
+        source,
+        target
+      };
 
-    setWorkflow(prev => ({
-      ...prev,
-      connections: [...prev.connections, newConnection]
-    }));
-  }, [workflow.connections]);
+      return {
+        ...prev,
+        connections: [...prev.connections, newConnection]
+      };
+    });
+  }, []);
 
   const deleteConnection = useCallback((connectionId: string) => {
     setWorkflow(prev => ({
