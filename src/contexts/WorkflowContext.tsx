@@ -15,6 +15,7 @@ interface WorkflowContextType {
   startDrag: ReturnType<typeof useWorkflow>['startDrag'];
   endDrag: ReturnType<typeof useWorkflow>['endDrag'];
   toggleNodeLibrary: ReturnType<typeof useWorkflow>['toggleNodeLibrary'];
+  openNodeLibrary: ReturnType<typeof useWorkflow>['openNodeLibrary'];
   closeNodeLibrary: ReturnType<typeof useWorkflow>['closeNodeLibrary'];
 }
 

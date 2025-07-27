@@ -102,6 +102,10 @@ export function useWorkflow() {
     setIsNodeLibraryOpen(prev => !prev);
   }, []);
 
+  const openNodeLibrary = useCallback(() => {
+    setIsNodeLibraryOpen(true);
+  }, []);
+
   const closeNodeLibrary = useCallback(() => {
     setIsNodeLibraryOpen(false);
   }, []);
@@ -120,6 +124,7 @@ export function useWorkflow() {
     startDrag,
     endDrag,
     toggleNodeLibrary,
+    openNodeLibrary,
     closeNodeLibrary
   };
 }
