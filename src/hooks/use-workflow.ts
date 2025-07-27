@@ -15,7 +15,7 @@ export function useWorkflow() {
   const [isNodeLibraryOpen, setIsNodeLibraryOpen] = useState(false);
   const [connectionSource, setConnectionSource] = useState<string | null>(null);
 
-  const addNode = useCallback((type: string, position: { x: number; y: number }, autoConnect = false) => {
+  const addNode = useCallback((type: string, position: { x: number; y: number }, autoConnect = false, sourceNodeId?: string) => {
     const newNode: WorkflowNode = {
       id: `node-${Date.now()}`,
       type,
@@ -24,10 +24,25 @@ export function useWorkflow() {
       status: 'idle'
     };
 
-    setWorkflow(prev => ({
-      ...prev,
-      nodes: [...prev.nodes, newNode]
-    }));
+    setWorkflow(prev => {
+      const updatedWorkflow = {
+        ...prev,
+        nodes: [...prev.nodes, newNode]
+      };
+
+      // If autoConnect is true and we have a source node, add the connection immediately
+      if (autoConnect && sourceNodeId) {
+        const newConnection: NodeConnection = {
+          id: `connection-${Date.now()}`,
+          source: sourceNodeId,
+          target: newNode.id
+        };
+
+        updatedWorkflow.connections = [...prev.connections, newConnection];
+      }
+
+      return updatedWorkflow;
+    });
 
     return newNode.id;
   }, []);

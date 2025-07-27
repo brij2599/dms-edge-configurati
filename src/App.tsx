@@ -55,16 +55,12 @@ function WorkflowBuilder() {
       y: centerY
     };
     
-    const newNodeId = addNode(nodeType, position, !!connectionSource);
+    // Add node with auto-connection if there's a source
+    const newNodeId = addNode(nodeType, position, !!connectionSource, connectionSource || undefined);
     
-    // If there's a connection source, connect the nodes immediately
-    if (connectionSource && newNodeId) {
-      // Use setTimeout to ensure the node is added to the workflow before creating connection
-      setTimeout(() => {
-        addConnection(connectionSource, newNodeId);
-        // Clear the connection source
-        setConnectionSourceNode(null);
-      }, 0);
+    // Clear the connection source if we used it
+    if (connectionSource) {
+      setConnectionSourceNode(null);
     }
     
     // Close the node library after adding a node
