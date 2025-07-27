@@ -24,6 +24,11 @@ function WorkflowBuilder() {
     closeNodeLibrary
   } = useWorkflowContext();
 
+  React.useEffect(() => {
+    console.log('WorkflowBuilder - workflow state changed:', workflow);
+    console.log('connectionSource:', connectionSource);
+  }, [workflow, connectionSource]);
+
   const selectedNode = selectedNodeId 
     ? workflow.nodes.find(node => node.id === selectedNodeId) || null 
     : null;
@@ -35,12 +40,15 @@ function WorkflowBuilder() {
     let centerX = canvasWidth / 2;
     let centerY = canvasHeight / 2;
     
+    console.log('handleNodeClick - connectionSource:', connectionSource);
+    
     // If we're connecting from another node, position the new node to the right
     if (connectionSource) {
       const sourceNode = workflow.nodes.find(node => node.id === connectionSource);
       if (sourceNode) {
         centerX = sourceNode.position.x + 200; // Position to the right of source
         centerY = sourceNode.position.y; // Same height as source
+        console.log('Positioning new node relative to source:', sourceNode, 'new position:', { centerX, centerY });
       }
     } else {
       // Add some randomization to avoid overlapping nodes
@@ -55,8 +63,12 @@ function WorkflowBuilder() {
       y: centerY
     };
     
+    console.log('Adding node with autoConnect:', !!connectionSource, 'sourceId:', connectionSource);
+    
     // Add node with auto-connection if there's a source
     const newNodeId = addNode(nodeType, position, !!connectionSource, connectionSource || undefined);
+    
+    console.log('New node added:', newNodeId);
     
     // Clear the connection source if we used it
     if (connectionSource) {

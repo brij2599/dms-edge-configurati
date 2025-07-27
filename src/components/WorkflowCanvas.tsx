@@ -117,6 +117,7 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
 
   // Handle adding a connection from a node's plus button
   const handleAddConnection = (sourceNodeId: string) => {
+    console.log('handleAddConnection called with sourceNodeId:', sourceNodeId);
     setConnectionSourceNode(sourceNodeId);
     openNodeLibrary();
   };

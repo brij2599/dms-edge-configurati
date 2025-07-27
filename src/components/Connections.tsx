@@ -7,6 +7,11 @@ interface ConnectionsProps {
 }
 
 export function Connections({ nodes, connections }: ConnectionsProps) {
+  React.useEffect(() => {
+    console.log('Connections render - nodes:', nodes.length, 'connections:', connections.length);
+    console.log('Connections details:', connections);
+  }, [nodes, connections]);
+
   const getNodeConnectionPoints = (nodeId: string) => {
     const node = nodes.find(n => n.id === nodeId);
     if (!node) {
@@ -44,7 +49,7 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
   return (
     <svg
       className="absolute inset-0 pointer-events-none"
-      style={{ zIndex: 2 }}
+      style={{ zIndex: 1 }}
     >
       <defs>
         <marker
@@ -54,7 +59,6 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
           refX="7"
           refY="3"
           orient="auto"
-          className="fill-gray-500"
         >
           <polygon
             points="0 0, 8 3, 0 6"
@@ -81,11 +85,11 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
             <path
               key={connection.id}
               d={createPath(start, end)}
-              stroke="#6b7280"
-              strokeWidth="2.5"
+              stroke="#374151"
+              strokeWidth="3"
               fill="none"
               markerEnd="url(#arrowhead)"
-              className="transition-all duration-200 hover:stroke-gray-600 hover:stroke-3"
+              className="drop-shadow-sm"
             />
           );
         })}

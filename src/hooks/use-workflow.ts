@@ -16,39 +16,49 @@ export function useWorkflow() {
   const [connectionSource, setConnectionSource] = useState<string | null>(null);
 
   const addNode = useCallback((type: string, position: { x: number; y: number }, autoConnect = false, sourceNodeId?: string) => {
+    const nodeId = `node-${Date.now()}`;
     const newNode: WorkflowNode = {
-      id: `node-${Date.now()}`,
+      id: nodeId,
       type,
       position,
       data: {},
       status: 'idle'
     };
 
+    console.log('addNode called:', { type, position, autoConnect, sourceNodeId, nodeId });
+
     setWorkflow(prev => {
+      console.log('addNode - current workflow:', prev);
       const updatedNodes = [...prev.nodes, newNode];
-      let updatedConnections = prev.connections;
+      let updatedConnections = [...prev.connections];
       
-      // If we need to auto-connect and both nodes will exist
+      // If we need to auto-connect and source node exists
       if (autoConnect && sourceNodeId) {
         const sourceExists = prev.nodes.some(n => n.id === sourceNodeId);
+        console.log('Auto-connect attempt:', { sourceNodeId, sourceExists, currentNodes: prev.nodes.map(n => n.id) });
+        
         if (sourceExists) {
           const newConnection: NodeConnection = {
-            id: `connection-${Date.now()}`,
+            id: `connection-${Date.now()}-${sourceNodeId}-${nodeId}`,
             source: sourceNodeId,
-            target: newNode.id
+            target: nodeId
           };
           updatedConnections = [...prev.connections, newConnection];
+          console.log('Connection created:', newConnection);
         }
       }
 
-      return {
+      const newWorkflow = {
         ...prev,
         nodes: updatedNodes,
         connections: updatedConnections
       };
+      
+      console.log('New workflow state:', newWorkflow);
+      return newWorkflow;
     });
 
-    return newNode.id;
+    return nodeId;
   }, []);
 
   const updateNode = useCallback((nodeId: string, updates: Partial<WorkflowNode>) => {
@@ -135,6 +145,7 @@ export function useWorkflow() {
   }, []);
 
   const setConnectionSourceNode = useCallback((sourceNodeId: string | null) => {
+    console.log('setConnectionSourceNode called:', sourceNodeId);
     setConnectionSource(sourceNodeId);
   }, []);
 
