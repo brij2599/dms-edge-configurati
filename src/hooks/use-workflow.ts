@@ -48,9 +48,6 @@ export function useWorkflow() {
         }
       }
 
-        }
-      }
-
       return {
         ...prev,
         nodes: updatedNodes,
