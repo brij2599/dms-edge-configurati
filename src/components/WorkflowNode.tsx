@@ -165,7 +165,7 @@ export function WorkflowNodeComponent({
       </div>
 
       {/* Connection Line with Plus Button */}
-      <div className="absolute left-[112px] top-[10px]">
+      <div className="absolute left-[112px] top-[40px]">
         {/* Horizontal line extending from the output port */}
         <div className="w-16 h-0.5 bg-gray-400" />
         
