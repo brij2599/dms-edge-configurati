@@ -7,14 +7,22 @@ interface ConnectionsProps {
 }
 
 export function Connections({ nodes, connections }: ConnectionsProps) {
-  const getNodeCenter = (nodeId: string) => {
+  const getNodeConnectionPoints = (nodeId: string) => {
     const node = nodes.find(n => n.id === nodeId);
-    if (!node) return { x: 0, y: 0 };
+    if (!node) return { input: { x: 0, y: 0 }, output: { x: 0, y: 0 } };
     
     // Node width is 112px (w-28), height 80px (h-20)
+    const centerY = node.position.y + 40; // half height
+    
     return {
-      x: node.position.x + 56, // half width
-      y: node.position.y + 40  // half height
+      input: {
+        x: node.position.x - 8, // left edge with port offset
+        y: centerY
+      },
+      output: {
+        x: node.position.x + 112 + 8, // right edge with port offset  
+        y: centerY
+      }
     };
   };
 
@@ -39,36 +47,36 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
       <defs>
         <marker
           id="arrowhead"
-          markerWidth="10"
-          markerHeight="7"
-          refX="9"
-          refY="3.5"
+          markerWidth="8"
+          markerHeight="6"
+          refX="7"
+          refY="3"
           orient="auto"
+          className="fill-gray-500"
         >
           <polygon
-            points="0 0, 10 3.5, 0 7"
+            points="0 0, 8 3, 0 6"
             fill="#6b7280"
           />
         </marker>
       </defs>
       
       {connections.map(connection => {
-        const start = getNodeCenter(connection.source);
-        const end = getNodeCenter(connection.target);
+        const sourcePoints = getNodeConnectionPoints(connection.source);
+        const targetPoints = getNodeConnectionPoints(connection.target);
         
-        // Adjust start and end points to node edges
-        const adjustedStart = { x: start.x + 56, y: start.y }; // right edge of source
-        const adjustedEnd = { x: end.x - 56, y: end.y }; // left edge of target
+        const start = sourcePoints.output;
+        const end = targetPoints.input;
         
         return (
           <path
             key={connection.id}
-            d={createPath(adjustedStart, adjustedEnd)}
+            d={createPath(start, end)}
             stroke="#6b7280"
-            strokeWidth="2"
+            strokeWidth="2.5"
             fill="none"
             markerEnd="url(#arrowhead)"
-            className="transition-all duration-200 hover:stroke-gray-500"
+            className="transition-all duration-200 hover:stroke-gray-600 hover:stroke-3"
           />
         );
       })}

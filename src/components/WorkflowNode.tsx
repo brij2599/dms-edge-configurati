@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { WorkflowNode } from '@/lib/workflow-types';
 import { NODE_TYPES } from '@/lib/workflow-types';
 import * as PhosphorIcons from '@phosphor-icons/react';
-import { Plus } from '@phosphor-icons/react';
+import { Plus, WarningTriangle } from '@phosphor-icons/react';
 
 interface WorkflowNodeComponentProps {
   node: WorkflowNode;
@@ -82,10 +82,11 @@ export function WorkflowNodeComponent({
   };
 
   const getBorderStyle = () => {
-    if (node.selected) return 'border-blue-500';
-    if (node.status === 'running') return 'border-blue-400';
-    if (node.status === 'error') return 'border-red-400';
-    return 'border-gray-300';
+    if (node.selected) return 'border-blue-500 border-2';
+    if (node.status === 'running') return 'border-blue-400 border-2';
+    if (node.status === 'error') return 'border-red-400 border-2';
+    if (node.type === 'activecampaign') return 'border-red-400 border-2'; // Error state from image
+    return 'border-gray-300 border-2';
   };
 
   const handleAddConnection = (e: React.MouseEvent) => {
@@ -120,20 +121,26 @@ export function WorkflowNodeComponent({
       className="flex flex-col items-center"
     >
       {/* Main Node Card */}
-      <div className={`relative w-28 h-20 bg-card rounded-xl border-2 ${getBorderStyle()} hover:shadow-lg transition-all duration-200 ${
+      <div className={`relative w-28 h-20 bg-card rounded-xl ${getBorderStyle()} hover:shadow-lg transition-all duration-200 ${
         isDragging ? 'shadow-xl scale-105' : ''
       } ${node.selected ? 'shadow-lg' : 'shadow-sm'}`}>
         
         {/* Input Connection Port */}
         <div 
-          className="absolute -left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 bg-gray-600 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-all duration-200 hover:bg-gray-700"
+          className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-gray-500 hover:bg-gray-600 rounded-full border-2 border-background cursor-pointer transition-all duration-200 hover:scale-110 shadow-md"
           title="Input"
+          style={{
+            background: node.type === 'webhook' ? '#6b7280' : '#6b7280'
+          }}
         />
         
         {/* Output Connection Port */}
         <div 
-          className="absolute -right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 bg-gray-600 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-all duration-200 hover:bg-gray-700"
+          className="absolute -right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-gray-500 hover:bg-gray-600 rounded-full border-2 border-background cursor-pointer transition-all duration-200 hover:scale-110 shadow-md"
           title="Output"
+          style={{
+            background: node.type === 'webhook' ? '#6b7280' : '#6b7280'
+          }}
         />
 
         {/* Node Content */}
@@ -149,8 +156,15 @@ export function WorkflowNodeComponent({
           </div>
         </div>
 
+        {/* Error Warning Icon for specific nodes */}
+        {(node.status === 'error' || node.type === 'activecampaign') && (
+          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border-2 border-white">
+            <WarningTriangle size={12} className="text-white" weight="fill" />
+          </div>
+        )}
+
         {/* Status Indicator */}
-        {node.status && node.status !== 'idle' && (
+        {node.status && node.status !== 'idle' && node.status !== 'error' && (
           <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${getStatusColor()}`} />
         )}
 
@@ -165,7 +179,7 @@ export function WorkflowNodeComponent({
       </div>
 
       {/* Connection Line with Plus Button */}
-      <div className="absolute left-[112px] top-[40px]">
+      <div className="absolute left-[110px] top-[40px]">
         {/* Horizontal line extending from the output port */}
         <div className="w-16 h-0.5 bg-gray-400" />
         
@@ -184,6 +198,10 @@ export function WorkflowNodeComponent({
         <h4 className="font-medium text-sm text-foreground">
           {nodeType?.name || 'Unknown Node'}
         </h4>
+        {/* Add subtitle for specific node types */}
+        {node.type === 'activecampaign' && (
+          <p className="text-xs text-muted-foreground mt-0.5">create: account</p>
+        )}
       </div>
     </div>
   );

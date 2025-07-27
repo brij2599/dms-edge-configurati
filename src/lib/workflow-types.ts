@@ -114,6 +114,14 @@ export const NODE_TYPES: NodeType[] = [
     description: 'Filter data based on conditions'
   },
   {
+    id: 'activecampaign',
+    name: 'ActiveCampaign',
+    category: 'destination',
+    icon: 'ArrowRight',
+    color: '#2563eb',
+    description: 'Send data to ActiveCampaign'
+  },
+  {
     id: 'output',
     name: 'Output',
     category: 'destination',
