@@ -42,8 +42,11 @@ function WorkflowBuilder() {
     let centerX = canvasWidth / 2;
     let centerY = canvasHeight / 2;
     
-    console.log('handleNodeClick - connectionSource:', connectionSource);
-    console.log('Current workflow nodes:', workflow.nodes.map(n => ({ id: n.id, type: n.type })));
+    console.log('=== handleNodeClick START ===');
+    console.log('nodeType:', nodeType);
+    console.log('connectionSource from context:', connectionSource);
+    console.log('Current workflow nodes before adding:', workflow.nodes.map(n => ({ id: n.id, type: n.type, position: n.position })));
+    console.log('Current workflow connections before adding:', workflow.connections);
     
     // If we're connecting from another node, position the new node to the right
     if (connectionSource) {
@@ -70,14 +73,23 @@ function WorkflowBuilder() {
       y: centerY
     };
     
-    console.log('Adding node with autoConnect:', !!connectionSource, 'sourceId:', connectionSource);
+    const shouldAutoConnect = !!connectionSource;
+    const sourceNodeId = connectionSource || undefined;
+    
+    console.log('Calling addNode with params:', {
+      nodeType,
+      position,
+      shouldAutoConnect,
+      sourceNodeId
+    });
     
     // Add node with auto-connection if there's a source
-    const newNodeId = addNode(nodeType, position, !!connectionSource, connectionSource || undefined);
+    const newNodeId = addNode(nodeType, position, shouldAutoConnect, sourceNodeId);
     
-    console.log('New node added:', newNodeId);
+    console.log('addNode returned newNodeId:', newNodeId);
     
     // Clear the connection source after node is added (regardless of whether it was used)
+    console.log('Clearing connection source...');
     setConnectionSourceNode(null);
     
     // Close the node library after adding a node
@@ -87,6 +99,8 @@ function WorkflowBuilder() {
     const nodeInfo = NODE_TYPES.find(node => node.id === nodeType);
     const nodeName = nodeInfo ? nodeInfo.name : nodeType;
     toast.success(`${nodeName} node added to canvas`);
+    
+    console.log('=== handleNodeClick END ===');
   };
 
   const handleDragStart = (nodeType: string, event: React.DragEvent) => {

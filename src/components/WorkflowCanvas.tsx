@@ -118,6 +118,7 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
   // Handle adding a connection from a node's plus button
   const handleAddConnection = (sourceNodeId: string) => {
     console.log('handleAddConnection called with sourceNodeId:', sourceNodeId);
+    console.log('Current workflow nodes before setting connection source:', workflow.nodes.map(n => ({ id: n.id, type: n.type })));
     setConnectionSourceNode(sourceNodeId);
     openNodeLibrary();
   };
@@ -144,6 +145,36 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
         <div className="bg-red-500 text-white px-4 py-2 rounded-lg font-medium text-sm shadow-sm">
           {workflow.name}
         </div>
+      </div>
+      
+      {/* Debug Info */}
+      <div className="absolute top-6 right-6 z-10 bg-black/80 text-white p-2 rounded text-xs font-mono">
+        <div>Nodes: {workflow.nodes.length}</div>
+        <div>Connections: {workflow.connections.length}</div>
+        <div>Connection Source: {connectionSource || 'None'}</div>
+        {workflow.connections.length > 0 && (
+          <div className="mt-1">
+            <div className="text-yellow-300">Latest connections:</div>
+            {workflow.connections.slice(-3).map(conn => (
+              <div key={conn.id} className="text-green-300">
+                {conn.source} → {conn.target}
+              </div>
+            ))}
+          </div>
+        )}
+        {workflow.nodes.length >= 2 && (
+          <button 
+            onClick={() => {
+              const node1 = workflow.nodes[0];
+              const node2 = workflow.nodes[1];
+              console.log('Manual test connection:', node1.id, '→', node2.id);
+              addConnection(node1.id, node2.id);
+            }}
+            className="mt-2 bg-green-600 px-2 py-1 rounded text-white hover:bg-green-700"
+          >
+            Test Connect First 2 Nodes
+          </button>
+        )}
       </div>
       
       {workflow.nodes.map(node => (

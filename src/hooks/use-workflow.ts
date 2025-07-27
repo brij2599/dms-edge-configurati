@@ -29,6 +29,9 @@ export function useWorkflow() {
 
     setWorkflow(prev => {
       console.log('addNode - current workflow:', prev);
+      console.log('addNode - current nodes before adding:', prev.nodes.map(n => ({ id: n.id, type: n.type })));
+      console.log('addNode - current connections before adding:', prev.connections);
+      
       const updatedNodes = [...prev.nodes, newNode];
       let updatedConnections = [...prev.connections];
       
@@ -51,8 +54,18 @@ export function useWorkflow() {
           updatedConnections = [...prev.connections, newConnection];
           console.log('Connection created:', newConnection);
           console.log('Updated connections array:', updatedConnections);
+          
+          // Add a timeout to see if connections render after a delay
+          setTimeout(() => {
+            console.log('POST-CREATION: Checking if connection exists in state...');
+            setWorkflow(current => {
+              console.log('Current connections after timeout:', current.connections);
+              return current; // No change, just checking
+            });
+          }, 1000);
         } else {
           console.error('Source node not found for auto-connect:', sourceNodeId);
+          console.error('Available nodes:', prev.nodes.map(n => ({ id: n.id, type: n.type })));
         }
       }
 

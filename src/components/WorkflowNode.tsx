@@ -92,8 +92,13 @@ export function WorkflowNodeComponent({
   const handleAddConnection = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    console.log('WorkflowNode handleAddConnection clicked for node:', node.id);
+    console.log('onAddConnection prop exists:', !!onAddConnection);
     if (onAddConnection) {
+      console.log('Calling onAddConnection with node ID:', node.id);
       onAddConnection(node.id);
+    } else {
+      console.warn('onAddConnection prop is missing');
     }
   };
 
