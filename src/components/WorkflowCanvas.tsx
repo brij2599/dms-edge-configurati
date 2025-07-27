@@ -38,13 +38,29 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
   }, [connecting]);
 
   const handlePlusButtonClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation(); // Prevent canvas click handler
     openNodeLibrary();
   };
 
   const handleCanvasClick = (e: React.MouseEvent) => {
-    // Check if click is on canvas background (not on any child elements)
-    if (e.target === e.currentTarget) {
+    // Check if click is on canvas background or empty space
+    const target = e.target as HTMLElement;
+    const canvas = e.currentTarget as HTMLElement;
+    
+    // Get the actual click coordinates relative to the canvas
+    const rect = canvas.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+    
+    // Check if click is on an empty area (not hitting any nodes or UI elements)
+    const isOnNode = target.closest('[data-node]');
+    const isOnLibrary = target.closest('[data-node-library]');
+    const isOnButton = target.closest('button') || target.closest('[role="button"]');
+    const isOnCard = target.closest('[data-testid="card"]') || target.closest('.card');
+    
+    // Only close if we're clicking on truly empty canvas space
+    if (!isOnNode && !isOnLibrary && !isOnButton && !isOnCard) {
       selectNode(null);
       closeNodeLibrary();
       if (connecting) {
@@ -114,16 +130,13 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
       <Connections nodes={workflow.nodes} connections={workflow.connections} />
       
       {workflow.nodes.map(node => (
-        <div
+        <WorkflowNodeComponent
           key={node.id}
-          onContextMenu={(e) => handleConnectionStart(node.id, e)}
-        >
-          <WorkflowNodeComponent
-            node={node}
-            onSelect={handleNodeSelect}
-            onMove={handleNodeMove}
-          />
-        </div>
+          node={node}
+          onSelect={handleNodeSelect}
+          onMove={handleNodeMove}
+          onConnectionStart={handleConnectionStart}
+        />
       ))}
       
       {connecting && (

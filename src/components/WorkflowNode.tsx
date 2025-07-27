@@ -9,6 +9,7 @@ interface WorkflowNodeComponentProps {
   node: WorkflowNode;
   onSelect: (nodeId: string) => void;
   onMove: (nodeId: string, position: { x: number; y: number }) => void;
+  onConnectionStart?: (nodeId: string, e: React.MouseEvent) => void;
   style?: React.CSSProperties;
 }
 
@@ -16,6 +17,7 @@ export function WorkflowNodeComponent({
   node, 
   onSelect, 
   onMove,
+  onConnectionStart,
   style 
 }: WorkflowNodeComponentProps) {
   const nodeType = NODE_TYPES.find(type => type.id === node.type);
@@ -78,8 +80,15 @@ export function WorkflowNodeComponent({
     return 'border-border border';
   };
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    if (onConnectionStart) {
+      onConnectionStart(node.id, e);
+    }
+  };
+
   return (
     <div
+      data-node
       style={{
         position: 'absolute',
         left: node.position.x,
@@ -89,6 +98,7 @@ export function WorkflowNodeComponent({
         ...style
       }}
       onMouseDown={handleMouseDown}
+      onContextMenu={handleContextMenu}
     >
       <Card className={`w-48 ${getBorderStyle()} hover:shadow-md transition-all duration-200 ${
         isDragging ? 'shadow-lg scale-105' : ''

@@ -69,7 +69,7 @@ export function NodeLibrary({ onDragStart }: NodeLibraryProps) {
   };
 
   return (
-    <div className="w-80 bg-card border-r border-border flex flex-col h-full">
+    <div data-node-library className="w-80 bg-card border-r border-border flex flex-col h-full">
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-foreground">Workflow Nodes</h2>
