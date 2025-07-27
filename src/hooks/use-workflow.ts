@@ -35,7 +35,12 @@ export function useWorkflow() {
       // If we need to auto-connect and source node exists
       if (autoConnect && sourceNodeId) {
         const sourceExists = prev.nodes.some(n => n.id === sourceNodeId);
-        console.log('Auto-connect attempt:', { sourceNodeId, sourceExists, currentNodes: prev.nodes.map(n => n.id) });
+        console.log('Auto-connect attempt:', { 
+          sourceNodeId, 
+          sourceExists, 
+          currentNodes: prev.nodes.map(n => n.id),
+          currentConnections: prev.connections.length 
+        });
         
         if (sourceExists) {
           const newConnection: NodeConnection = {
@@ -45,14 +50,26 @@ export function useWorkflow() {
           };
           updatedConnections = [...prev.connections, newConnection];
           console.log('Connection created:', newConnection);
+          console.log('Updated connections array:', updatedConnections);
+        } else {
+          console.error('Source node not found for auto-connect:', sourceNodeId);
         }
       }
 
-      return {
+      const newWorkflow = {
         ...prev,
         nodes: updatedNodes,
         connections: updatedConnections
       };
+      
+      console.log('Workflow updated:', {
+        nodeCount: newWorkflow.nodes.length,
+        connectionCount: newWorkflow.connections.length,
+        addedNode: nodeId,
+        connections: newWorkflow.connections
+      });
+      
+      return newWorkflow;
     });
 
     return nodeId;

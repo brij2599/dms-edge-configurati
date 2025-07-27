@@ -25,8 +25,10 @@ function WorkflowBuilder() {
   } = useWorkflowContext();
 
   React.useEffect(() => {
-    console.log('WorkflowBuilder - workflow state changed:', workflow);
-    console.log('connectionSource:', connectionSource);
+    console.log('WorkflowBuilder - workflow state changed:');
+    console.log('  - nodes:', workflow.nodes.length, workflow.nodes.map(n => ({ id: n.id, type: n.type, position: n.position })));
+    console.log('  - connections:', workflow.connections.length, workflow.connections);
+    console.log('  - connectionSource:', connectionSource);
   }, [workflow, connectionSource]);
 
   const selectedNode = selectedNodeId 
@@ -41,6 +43,7 @@ function WorkflowBuilder() {
     let centerY = canvasHeight / 2;
     
     console.log('handleNodeClick - connectionSource:', connectionSource);
+    console.log('Current workflow nodes:', workflow.nodes.map(n => ({ id: n.id, type: n.type })));
     
     // If we're connecting from another node, position the new node to the right
     if (connectionSource) {
@@ -49,6 +52,10 @@ function WorkflowBuilder() {
         centerX = sourceNode.position.x + 200; // Position to the right of source
         centerY = sourceNode.position.y; // Same height as source
         console.log('Positioning new node relative to source:', sourceNode, 'new position:', { centerX, centerY });
+      } else {
+        console.warn('Connection source node not found:', connectionSource);
+        // Clear invalid connection source
+        setConnectionSourceNode(null);
       }
     } else {
       // Add some randomization to avoid overlapping nodes
@@ -70,10 +77,8 @@ function WorkflowBuilder() {
     
     console.log('New node added:', newNodeId);
     
-    // Clear the connection source if we used it
-    if (connectionSource) {
-      setConnectionSourceNode(null);
-    }
+    // Clear the connection source after node is added (regardless of whether it was used)
+    setConnectionSourceNode(null);
     
     // Close the node library after adding a node
     closeNodeLibrary();
