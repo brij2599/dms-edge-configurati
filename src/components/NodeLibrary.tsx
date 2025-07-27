@@ -10,9 +10,10 @@ import * as PhosphorIcons from '@phosphor-icons/react';
 
 interface NodeLibraryProps {
   onDragStart: (type: string, event: React.DragEvent) => void;
+  onNodeClick?: (type: string) => void;
 }
 
-export function NodeLibrary({ onDragStart }: NodeLibraryProps) {
+export function NodeLibrary({ onDragStart, onNodeClick }: NodeLibraryProps) {
   const [searchTerm, setSearchTerm] = React.useState('');
 
   const filteredNodes = NODE_TYPES.filter(node =>
@@ -37,6 +38,12 @@ export function NodeLibrary({ onDragStart }: NodeLibraryProps) {
     onDragStart(nodeType, event);
   };
 
+  const handleNodeClick = (nodeType: string) => {
+    if (onNodeClick) {
+      onNodeClick(nodeType);
+    }
+  };
+
   const NodeItem = ({ node }: { node: NodeType }) => {
     const IconComponent = (PhosphorIcons as any)[node.icon] || PhosphorIcons.Circle;
     
@@ -44,7 +51,8 @@ export function NodeLibrary({ onDragStart }: NodeLibraryProps) {
       <div
         draggable
         onDragStart={handleDragStart(node.id)}
-        className="group cursor-grab active:cursor-grabbing"
+        onClick={() => handleNodeClick(node.id)}
+        className="group cursor-grab active:cursor-grabbing hover:cursor-pointer"
       >
         <Card className="p-3 hover:shadow-sm transition-all duration-200 border-2 border-transparent hover:border-primary/20 group-active:scale-95">
           <div className="flex items-center gap-3">

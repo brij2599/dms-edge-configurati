@@ -6,6 +6,7 @@ import { WorkflowCanvas } from '@/components/WorkflowCanvas';
 import { NodeConfigPanel } from '@/components/NodeConfigPanel';
 import { Toaster } from '@/components/ui/sonner';
 import { toast } from 'sonner';
+import { NODE_TYPES } from '@/lib/workflow-types';
 
 function WorkflowBuilder() {
   const { 
@@ -13,6 +14,7 @@ function WorkflowBuilder() {
     selectedNodeId,
     draggedNode,
     isNodeLibraryOpen,
+    addNode,
     startDrag, 
     endDrag,
     selectNode
@@ -21,6 +23,30 @@ function WorkflowBuilder() {
   const selectedNode = selectedNodeId 
     ? workflow.nodes.find(node => node.id === selectedNodeId) || null 
     : null;
+
+  const handleNodeClick = (nodeType: string) => {
+    // Calculate a position in the center of the canvas with some randomization
+    const canvasWidth = 800; // Approximate canvas width
+    const canvasHeight = 600; // Approximate canvas height
+    const centerX = canvasWidth / 2;
+    const centerY = canvasHeight / 2;
+    
+    // Add some randomization to avoid overlapping nodes
+    const offsetX = (Math.random() - 0.5) * 200; // Random offset between -100 and 100
+    const offsetY = (Math.random() - 0.5) * 200;
+    
+    const position = {
+      x: centerX + offsetX,
+      y: centerY + offsetY
+    };
+    
+    addNode(nodeType, position);
+    
+    // Find the node name for the toast
+    const nodeInfo = NODE_TYPES.find(node => node.id === nodeType);
+    const nodeName = nodeInfo ? nodeInfo.name : nodeType;
+    toast.success(`${nodeName} node added to canvas`);
+  };
 
   const handleDragStart = (nodeType: string, event: React.DragEvent) => {
     const rect = (event.target as HTMLElement).getBoundingClientRect();
@@ -78,7 +104,10 @@ function WorkflowBuilder() {
         )}
         
         {isNodeLibraryOpen && (
-          <NodeLibrary onDragStart={handleDragStart} />
+          <NodeLibrary 
+            onDragStart={handleDragStart} 
+            onNodeClick={handleNodeClick}
+          />
         )}
       </div>
       
