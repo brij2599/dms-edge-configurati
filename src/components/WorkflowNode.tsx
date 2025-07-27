@@ -33,6 +33,11 @@ export function WorkflowNodeComponent({
       x: e.clientX - node.position.x,
       y: e.clientY - node.position.y
     });
+  };
+
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     onSelect(node.id);
   };
 
@@ -98,6 +103,7 @@ export function WorkflowNodeComponent({
         ...style
       }}
       onMouseDown={handleMouseDown}
+      onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
       className="flex flex-col items-center"
     >
