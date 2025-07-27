@@ -56,12 +56,12 @@ function WorkflowBuilder() {
     
     const newNodeId = addNode(nodeType, position, !!connectionSource);
     
-    // If there's a connection source, connect the nodes
+    // If there's a connection source, connect the nodes immediately
     if (connectionSource && newNodeId) {
-      setTimeout(() => {
-        addConnection(connectionSource, newNodeId);
-        setConnectionSourceNode(null);
-      }, 100);
+      // Add connection immediately after node creation
+      addConnection(connectionSource, newNodeId);
+      // Clear the connection source
+      setConnectionSourceNode(null);
     }
     
     // Find the node name for the toast
