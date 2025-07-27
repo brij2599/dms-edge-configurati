@@ -25,23 +25,27 @@ export function useWorkflow() {
     };
 
     setWorkflow(prev => {
-      const updatedWorkflow = {
-        ...prev,
-        nodes: [...prev.nodes, newNode]
-      };
-
-      // If autoConnect is true and we have a source node, add the connection immediately
+      const updatedNodes = [...prev.nodes, newNode];
+      let updatedConnections = prev.connections;
+      
+      // If we need to auto-connect and both nodes will exist
       if (autoConnect && sourceNodeId) {
-        const newConnection: NodeConnection = {
-          id: `connection-${Date.now()}`,
-          source: sourceNodeId,
-          target: newNode.id
-        };
-
-        updatedWorkflow.connections = [...prev.connections, newConnection];
+        const sourceExists = prev.nodes.some(n => n.id === sourceNodeId);
+        if (sourceExists) {
+          const newConnection: NodeConnection = {
+            id: `connection-${Date.now()}`,
+            source: sourceNodeId,
+            target: newNode.id
+          };
+          updatedConnections = [...prev.connections, newConnection];
+        }
       }
 
-      return updatedWorkflow;
+      return {
+        ...prev,
+        nodes: updatedNodes,
+        connections: updatedConnections
+      };
     });
 
     return newNode.id;
@@ -73,7 +77,9 @@ export function useWorkflow() {
         conn => conn.source === source && conn.target === target
       );
       
-      if (exists) return prev;
+      if (exists) {
+        return prev;
+      }
 
       const newConnection: NodeConnection = {
         id: `connection-${Date.now()}`,

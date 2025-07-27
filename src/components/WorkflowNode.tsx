@@ -112,7 +112,7 @@ export function WorkflowNodeComponent({
         left: node.position.x,
         top: node.position.y,
         cursor: isDragging ? 'grabbing' : 'grab',
-        zIndex: node.selected ? 10 : 1,
+        zIndex: node.selected ? 10 : 5,
         ...style
       }}
       onMouseDown={handleMouseDown}

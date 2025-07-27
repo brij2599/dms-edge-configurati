@@ -9,7 +9,9 @@ interface ConnectionsProps {
 export function Connections({ nodes, connections }: ConnectionsProps) {
   const getNodeConnectionPoints = (nodeId: string) => {
     const node = nodes.find(n => n.id === nodeId);
-    if (!node) return { input: { x: 0, y: 0 }, output: { x: 0, y: 0 } };
+    if (!node) {
+      return { input: { x: 0, y: 0 }, output: { x: 0, y: 0 } };
+    }
     
     // Node width is 112px (w-28), height 80px (h-20)
     const centerY = node.position.y + 40; // half height
@@ -42,7 +44,7 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
   return (
     <svg
       className="absolute inset-0 pointer-events-none"
-      style={{ zIndex: 0 }}
+      style={{ zIndex: 2 }}
     >
       <defs>
         <marker
@@ -61,25 +63,32 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
         </marker>
       </defs>
       
-      {connections.map(connection => {
-        const sourcePoints = getNodeConnectionPoints(connection.source);
-        const targetPoints = getNodeConnectionPoints(connection.target);
-        
-        const start = sourcePoints.output;
-        const end = targetPoints.input;
-        
-        return (
-          <path
-            key={connection.id}
-            d={createPath(start, end)}
-            stroke="#6b7280"
-            strokeWidth="2.5"
-            fill="none"
-            markerEnd="url(#arrowhead)"
-            className="transition-all duration-200 hover:stroke-gray-600 hover:stroke-3"
-          />
-        );
-      })}
+      {connections
+        .filter(connection => {
+          // Only render connections where both source and target nodes exist
+          const sourceExists = nodes.some(n => n.id === connection.source);
+          const targetExists = nodes.some(n => n.id === connection.target);
+          return sourceExists && targetExists;
+        })
+        .map(connection => {
+          const sourcePoints = getNodeConnectionPoints(connection.source);
+          const targetPoints = getNodeConnectionPoints(connection.target);
+          
+          const start = sourcePoints.output;
+          const end = targetPoints.input;
+          
+          return (
+            <path
+              key={connection.id}
+              d={createPath(start, end)}
+              stroke="#6b7280"
+              strokeWidth="2.5"
+              fill="none"
+              markerEnd="url(#arrowhead)"
+              className="transition-all duration-200 hover:stroke-gray-600 hover:stroke-3"
+            />
+          );
+        })}
     </svg>
   );
 }
