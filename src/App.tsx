@@ -64,8 +64,6 @@ function WorkflowBuilder() {
       />
       
       <div className="flex-1 flex overflow-hidden">
-        <NodeLibrary onDragStart={handleDragStart} />
-        
         <WorkflowCanvas 
           draggedNode={draggedNode}
           onDragEnd={endDrag}
@@ -77,6 +75,8 @@ function WorkflowBuilder() {
             onClose={handleCloseConfig}
           />
         )}
+        
+        <NodeLibrary onDragStart={handleDragStart} />
       </div>
       
       <Toaster position="bottom-right" />
