@@ -96,6 +96,13 @@ export function WorkflowNodeComponent({
     }
   };
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Prevent right-click context menu on nodes for now
+    // Could be extended later for node-specific actions
+  };
+
   return (
     <div
       data-node
