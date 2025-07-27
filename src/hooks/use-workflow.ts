@@ -48,14 +48,14 @@ export function useWorkflow() {
         }
       }
 
-      const newWorkflow = {
+        }
+      }
+
+      return {
         ...prev,
         nodes: updatedNodes,
         connections: updatedConnections
       };
-      
-      console.log('New workflow state:', newWorkflow);
-      return newWorkflow;
     });
 
     return nodeId;
