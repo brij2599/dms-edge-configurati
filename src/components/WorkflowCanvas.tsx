@@ -129,6 +129,13 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
     >
       <Connections nodes={workflow.nodes} connections={workflow.connections} />
       
+      {/* Workflow Name Badge */}
+      <div className="absolute top-6 left-6 z-10">
+        <div className="bg-red-500 text-white px-4 py-2 rounded-lg font-medium text-sm shadow-sm">
+          {workflow.name}
+        </div>
+      </div>
+      
       {workflow.nodes.map(node => (
         <WorkflowNodeComponent
           key={node.id}

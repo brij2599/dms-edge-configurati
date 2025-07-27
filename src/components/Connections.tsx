@@ -11,10 +11,10 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
     const node = nodes.find(n => n.id === nodeId);
     if (!node) return { x: 0, y: 0 };
     
-    // Node width is 192px (w-48), height approximately 120px
+    // Node width is 112px (w-28), height 80px (h-20)
     return {
-      x: node.position.x + 96, // half width
-      y: node.position.y + 60  // half height
+      x: node.position.x + 56, // half width
+      y: node.position.y + 40  // half height
     };
   };
 
@@ -47,7 +47,7 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
         >
           <polygon
             points="0 0, 10 3.5, 0 7"
-            fill="oklch(0.4 0.15 240)"
+            fill="#6b7280"
           />
         </marker>
       </defs>
@@ -57,18 +57,18 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
         const end = getNodeCenter(connection.target);
         
         // Adjust start and end points to node edges
-        const adjustedStart = { x: start.x + 96, y: start.y }; // right edge of source
-        const adjustedEnd = { x: end.x - 96, y: end.y }; // left edge of target
+        const adjustedStart = { x: start.x + 56, y: start.y }; // right edge of source
+        const adjustedEnd = { x: end.x - 56, y: end.y }; // left edge of target
         
         return (
           <path
             key={connection.id}
             d={createPath(adjustedStart, adjustedEnd)}
-            stroke="oklch(0.4 0.15 240)"
+            stroke="#6b7280"
             strokeWidth="2"
             fill="none"
             markerEnd="url(#arrowhead)"
-            className="transition-all duration-200 hover:stroke-primary/80"
+            className="transition-all duration-200 hover:stroke-gray-500"
           />
         );
       })}

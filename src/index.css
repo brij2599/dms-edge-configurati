@@ -3,7 +3,8 @@
 
 @layer base {
   * {
-    @apply border-border
+    @apply border-border;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 }
 

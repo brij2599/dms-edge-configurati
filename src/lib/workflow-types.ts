@@ -34,11 +34,27 @@ export interface Workflow {
 
 export const NODE_TYPES: NodeType[] = [
   {
+    id: 'webhook',
+    name: 'Webhook',
+    category: 'source',
+    icon: 'Globe',
+    color: '#ec4a3f',
+    description: 'Receive HTTP requests as triggers'
+  },
+  {
+    id: 'ai-transform',
+    name: 'AI Transform',
+    category: 'transform',
+    icon: 'Sparkle',
+    color: '#8b5cf6',
+    description: 'Process data using AI models'
+  },
+  {
     id: 'delta-plc',
     name: 'Delta PLC',
     category: 'source',
     icon: 'Factory',
-    color: 'oklch(0.5 0.15 220)',
+    color: '#3b82f6',
     description: 'Connect to Delta PLC devices'
   },
   {
@@ -46,7 +62,7 @@ export const NODE_TYPES: NodeType[] = [
     name: 'Energy Meter',
     category: 'source',
     icon: 'Lightning',
-    color: 'oklch(0.6 0.15 60)',
+    color: '#f59e0b',
     description: 'Read energy consumption data'
   },
   {
@@ -54,7 +70,7 @@ export const NODE_TYPES: NodeType[] = [
     name: 'Mitsubishi PLC',
     category: 'source',
     icon: 'Cpu',
-    color: 'oklch(0.55 0.15 10)',
+    color: '#ef4444',
     description: 'Connect to Mitsubishi PLC systems'
   },
   {
@@ -62,7 +78,7 @@ export const NODE_TYPES: NodeType[] = [
     name: 'Database',
     category: 'source',
     icon: 'Database',
-    color: 'oklch(0.45 0.12 260)',
+    color: '#6366f1',
     description: 'Connect to SQL databases'
   },
   {
@@ -70,7 +86,7 @@ export const NODE_TYPES: NodeType[] = [
     name: 'Scheduler',
     category: 'source',
     icon: 'Clock',
-    color: 'oklch(0.5 0.15 140)',
+    color: '#10b981',
     description: 'Schedule automated tasks'
   },
   {
@@ -78,7 +94,7 @@ export const NODE_TYPES: NodeType[] = [
     name: 'Siemens',
     category: 'source',
     icon: 'Gear',
-    color: 'oklch(0.3 0.05 240)',
+    color: '#64748b',
     description: 'Connect to Siemens devices'
   },
   {
@@ -86,7 +102,7 @@ export const NODE_TYPES: NodeType[] = [
     name: 'Transform',
     category: 'transform',
     icon: 'ArrowsClockwise',
-    color: 'oklch(0.6 0.15 40)',
+    color: '#f97316',
     description: 'Transform and process data'
   },
   {
@@ -94,7 +110,7 @@ export const NODE_TYPES: NodeType[] = [
     name: 'Filter',
     category: 'transform',
     icon: 'Funnel',
-    color: 'oklch(0.55 0.15 80)',
+    color: '#eab308',
     description: 'Filter data based on conditions'
   },
   {
@@ -102,7 +118,7 @@ export const NODE_TYPES: NodeType[] = [
     name: 'Output',
     category: 'destination',
     icon: 'Export',
-    color: 'oklch(0.6 0.15 140)',
+    color: '#22c55e',
     description: 'Send data to external systems'
   }
 ];

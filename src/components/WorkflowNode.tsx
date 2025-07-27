@@ -74,10 +74,10 @@ export function WorkflowNodeComponent({
   };
 
   const getBorderStyle = () => {
-    if (node.selected) return 'border-primary border-2';
-    if (node.status === 'running') return 'border-blue-300 border-2';
-    if (node.status === 'error') return 'border-red-300 border-2';
-    return 'border-border border';
+    if (node.selected) return 'border-blue-500';
+    if (node.status === 'running') return 'border-blue-400';
+    if (node.status === 'error') return 'border-red-400';
+    return 'border-gray-300';
   };
 
   const handleContextMenu = (e: React.MouseEvent) => {
@@ -99,49 +99,59 @@ export function WorkflowNodeComponent({
       }}
       onMouseDown={handleMouseDown}
       onContextMenu={handleContextMenu}
+      className="flex flex-col items-center"
     >
-      <Card className={`w-48 ${getBorderStyle()} hover:shadow-md transition-all duration-200 ${
-        isDragging ? 'shadow-lg scale-105' : ''
-      }`}>
-        {/* Connection ports */}
-        <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-primary rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform" />
-        <div className="absolute -right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-primary rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform" />
+      {/* Main Node Card */}
+      <div className={`relative w-28 h-20 bg-card rounded-xl border-2 ${getBorderStyle()} hover:shadow-lg transition-all duration-200 ${
+        isDragging ? 'shadow-xl scale-105' : ''
+      } ${node.selected ? 'shadow-lg' : 'shadow-sm'}`}>
         
-        <div className="p-4">
-          <div className="flex items-center gap-3 mb-2">
+        {/* Input Connection Port */}
+        <div 
+          className="absolute -left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 bg-gray-600 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-all duration-200 hover:bg-gray-700"
+          title="Input"
+        />
+        
+        {/* Output Connection Port */}
+        <div 
+          className="absolute -right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 bg-gray-600 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-all duration-200 hover:bg-gray-700"
+          title="Output"
+        />
+
+        {/* Node Content */}
+        <div className="flex items-center justify-center h-full">
+          <div className="flex flex-col items-center gap-1">
+            {/* Main Icon */}
             <div 
-              className="w-8 h-8 rounded-md flex items-center justify-center text-white"
-              style={{ backgroundColor: nodeType?.color || '#666' }}
+              className="w-10 h-10 rounded-lg flex items-center justify-center text-white shadow-sm"
+              style={{ backgroundColor: nodeType?.color || '#6b7280' }}
             >
-              <IconComponent size={16} weight="fill" />
+              <IconComponent size={24} weight="fill" />
             </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-sm text-foreground truncate">
-                {nodeType?.name || 'Unknown Node'}
-              </h4>
-            </div>
-            <div className={`w-2 h-2 rounded-full ${getStatusColor()}`} />
-          </div>
-          
-          <p className="text-xs text-muted-foreground mb-3">
-            {nodeType?.description || 'No description'}
-          </p>
-          
-          <div className="flex items-center justify-between">
-            <Badge variant="outline" className="text-xs">
-              {nodeType?.category || 'unknown'}
-            </Badge>
-            {node.status && node.status !== 'idle' && (
-              <Badge 
-                variant={node.status === 'error' ? 'destructive' : 'default'}
-                className="text-xs"
-              >
-                {node.status}
-              </Badge>
-            )}
           </div>
         </div>
-      </Card>
+
+        {/* Status Indicator */}
+        {node.status && node.status !== 'idle' && (
+          <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${getStatusColor()}`} />
+        )}
+
+        {/* HTTP Method Badge for Webhook nodes */}
+        {node.type === 'webhook' && (
+          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+            <div className="bg-gray-700 text-white text-xs px-2 py-0.5 rounded-md font-medium">
+              GET
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Node Label */}
+      <div className="mt-2 text-center">
+        <h4 className="font-medium text-sm text-foreground">
+          {nodeType?.name || 'Unknown Node'}
+        </h4>
+      </div>
     </div>
   );
 }
