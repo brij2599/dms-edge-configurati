@@ -51,8 +51,6 @@ export function useWorkflow() {
       position,
       data: {},
       status: 'idle'
-    };
-
     console.log('addNode called:', { type, position, autoConnect, sourceNodeId, nodeId });
 
     setWorkflow(prev => {
