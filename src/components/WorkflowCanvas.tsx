@@ -130,20 +130,14 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
 
   // Handle adding a connection from a node's plus button
   const handleAddConnection = (sourceNodeId: string) => {
-    console.log('handleAddConnection called with sourceNodeId:', sourceNodeId);
-    console.log('Current workflow nodes before setting connection source:', workflow.nodes.map(n => ({ id: n.id, type: n.type })));
     setConnectionSourceNode(sourceNodeId);
     openNodeLibrary();
   };
 
   // Handle node click for connection (when user clicks on existing nodes to connect them)
   const handleNodeConnectionClick = (targetId: string) => {
-    console.log('handleNodeConnectionClick called with targetId:', targetId);
-    console.log('Current connectionSource:', connectionSource);
-    
     if (connectionSource && connectionSource !== targetId) {
       // Complete the connection between existing nodes
-      console.log('Creating connection from', connectionSource, 'to', targetId);
       addConnection(connectionSource, targetId);
       setConnectionSourceNode(null); // Clear connection source
     }
@@ -171,57 +165,6 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
         <div className="bg-red-500 text-white px-4 py-2 rounded-lg font-medium text-sm shadow-sm">
           {workflow.name}
         </div>
-      </div>
-      
-      {/* Debug Info */}
-      <div className="absolute top-6 right-6 z-10 bg-black/80 text-white p-2 rounded text-xs font-mono">
-        <div>Nodes: {workflow.nodes.length}</div>
-        <div>Connections: {workflow.connections.length}</div>
-        <div>Connection Source: {connectionSource || 'None'}</div>
-        {workflow.connections.length > 0 && (
-          <div className="mt-1">
-            <div className="text-yellow-300">Latest connections:</div>
-            {workflow.connections.slice(-3).map(conn => (
-              <div key={conn.id} className="text-green-300">
-                {conn.source} → {conn.target}
-              </div>
-            ))}
-          </div>
-        )}
-        {workflow.nodes.length >= 2 && (
-          <div className="mt-2 space-y-1">
-            <button 
-              onClick={() => {
-                const node1 = workflow.nodes[0];
-                const node2 = workflow.nodes[1];
-                console.log('=== MANUAL CONNECTION TEST START ===');
-                console.log('Node 1:', node1.id, node1.type);
-                console.log('Node 2:', node2.id, node2.type);
-                console.log('Current connections before:', workflow.connections);
-                addConnection(node1.id, node2.id);
-                console.log('addConnection called');
-                
-                // Check connection after a short delay
-                setTimeout(() => {
-                  console.log('Connection check after 500ms:', workflow.connections);
-                }, 500);
-                console.log('=== MANUAL CONNECTION TEST END ===');
-              }}
-              className="block w-full bg-green-600 px-2 py-1 rounded text-white hover:bg-green-700 text-xs"
-            >
-              Test Connect First 2 Nodes
-            </button>
-            <button 
-              onClick={() => {
-                clearAllConnections();
-                console.log('All connections cleared');
-              }}
-              className="block w-full bg-red-600 px-2 py-1 rounded text-white hover:bg-red-700 text-xs"
-            >
-              Clear All Connections
-            </button>
-          </div>
-        )}
       </div>
       
       {workflow.nodes.map(node => (

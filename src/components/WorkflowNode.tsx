@@ -102,13 +102,8 @@ export function WorkflowNodeComponent({
   const handleAddConnection = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('WorkflowNode handleAddConnection clicked for node:', node.id);
-    console.log('onAddConnection prop exists:', !!onAddConnection);
     if (onAddConnection) {
-      console.log('Calling onAddConnection with node ID:', node.id);
       onAddConnection(node.id);
-    } else {
-      console.warn('onAddConnection prop is missing');
     }
   };
 
@@ -162,7 +157,7 @@ export function WorkflowNodeComponent({
         />
 
         {/* Node Content */}
-        <div className="flex items-center justify-center h-full">
+        <div className="flex items-center justify-center h-full text-amber-300 bg-slate-50 border-red-600">
           <div className="flex flex-col items-center gap-1">
             {/* Main Icon */}
             <div 
@@ -189,13 +184,10 @@ export function WorkflowNodeComponent({
         {/* HTTP Method Badge for Webhook nodes */}
         {node.type === 'webhook' && (
           <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-            <div className="bg-gray-700 text-white text-xs px-2 py-0.5 rounded-md font-medium">
-              GET
-            </div>
+            <div className="bg-gray-700 text-white text-xs px-2 py-0.5 rounded-md font-medium">PUT</div>
           </div>
         )}
       </div>
-
       {/* Connection Line with Plus Button */}
       <div className="absolute left-[110px] top-[40px] transform -translate-y-1/2">
         {/* Horizontal line extending from the output port */}
@@ -210,7 +202,6 @@ export function WorkflowNodeComponent({
           <Plus size={16} className="text-gray-600" />
         </div>
       </div>
-
       {/* Node Label */}
       <div className="mt-2 text-center">
         <h4 className="font-medium text-sm text-foreground">

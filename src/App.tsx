@@ -25,10 +25,7 @@ function WorkflowBuilder() {
   } = useWorkflowContext();
 
   React.useEffect(() => {
-    console.log('WorkflowBuilder - workflow state changed:');
-    console.log('  - nodes:', workflow.nodes.length, workflow.nodes.map(n => ({ id: n.id, type: n.type, position: n.position })));
-    console.log('  - connections:', workflow.connections.length, workflow.connections);
-    console.log('  - connectionSource:', connectionSource);
+    // Track workflow state changes for development
   }, [workflow, connectionSource]);
 
   const selectedNode = selectedNodeId 
@@ -42,21 +39,13 @@ function WorkflowBuilder() {
     let centerX = canvasWidth / 2;
     let centerY = canvasHeight / 2;
     
-    console.log('=== handleNodeClick START ===');
-    console.log('nodeType:', nodeType);
-    console.log('connectionSource from context:', connectionSource);
-    console.log('Current workflow nodes before adding:', workflow.nodes.map(n => ({ id: n.id, type: n.type, position: n.position })));
-    console.log('Current workflow connections before adding:', workflow.connections);
-    
     // If we're connecting from another node, position the new node to the right
     if (connectionSource) {
       const sourceNode = workflow.nodes.find(node => node.id === connectionSource);
       if (sourceNode) {
         centerX = sourceNode.position.x + 200; // Position to the right of source
         centerY = sourceNode.position.y; // Same height as source
-        console.log('Positioning new node relative to source:', sourceNode, 'new position:', { centerX, centerY });
       } else {
-        console.warn('Connection source node not found:', connectionSource);
         // Clear invalid connection source
         setConnectionSourceNode(null);
       }
@@ -76,20 +65,10 @@ function WorkflowBuilder() {
     const shouldAutoConnect = !!connectionSource;
     const sourceNodeId = connectionSource || undefined;
     
-    console.log('Calling addNode with params:', {
-      nodeType,
-      position,
-      shouldAutoConnect,
-      sourceNodeId
-    });
-    
     // Add node with auto-connection if there's a source
     const newNodeId = addNode(nodeType, position, shouldAutoConnect, sourceNodeId);
     
-    console.log('addNode returned newNodeId:', newNodeId);
-    
     // Clear the connection source after node is added (regardless of whether it was used)
-    console.log('Clearing connection source...');
     setConnectionSourceNode(null);
     
     // Close the node library after adding a node
@@ -99,8 +78,6 @@ function WorkflowBuilder() {
     const nodeInfo = NODE_TYPES.find(node => node.id === nodeType);
     const nodeName = nodeInfo ? nodeInfo.name : nodeType;
     toast.success(`${nodeName} node added to canvas`);
-    
-    console.log('=== handleNodeClick END ===');
   };
 
   const handleDragStart = (nodeType: string, event: React.DragEvent) => {
