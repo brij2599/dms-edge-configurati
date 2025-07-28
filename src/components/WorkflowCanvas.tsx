@@ -163,17 +163,38 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
           </div>
         )}
         {workflow.nodes.length >= 2 && (
-          <button 
-            onClick={() => {
-              const node1 = workflow.nodes[0];
-              const node2 = workflow.nodes[1];
-              console.log('Manual test connection:', node1.id, '→', node2.id);
-              addConnection(node1.id, node2.id);
-            }}
-            className="mt-2 bg-green-600 px-2 py-1 rounded text-white hover:bg-green-700"
-          >
-            Test Connect First 2 Nodes
-          </button>
+          <div className="mt-2 space-y-1">
+            <button 
+              onClick={() => {
+                const node1 = workflow.nodes[0];
+                const node2 = workflow.nodes[1];
+                console.log('=== MANUAL CONNECTION TEST START ===');
+                console.log('Node 1:', node1.id, node1.type);
+                console.log('Node 2:', node2.id, node2.type);
+                console.log('Current connections before:', workflow.connections);
+                addConnection(node1.id, node2.id);
+                console.log('addConnection called');
+                
+                // Check connection after a short delay
+                setTimeout(() => {
+                  console.log('Connection check after 500ms:', workflow.connections);
+                }, 500);
+                console.log('=== MANUAL CONNECTION TEST END ===');
+              }}
+              className="block w-full bg-green-600 px-2 py-1 rounded text-white hover:bg-green-700 text-xs"
+            >
+              Test Connect First 2 Nodes
+            </button>
+            <button 
+              onClick={() => {
+                setWorkflow(prev => ({ ...prev, connections: [] }));
+                console.log('All connections cleared');
+              }}
+              className="block w-full bg-red-600 px-2 py-1 rounded text-white hover:bg-red-700 text-xs"
+            >
+              Clear All Connections
+            </button>
+          </div>
         )}
       </div>
       

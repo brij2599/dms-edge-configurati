@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { WorkflowNode, NodeConnection, Workflow } from '@/lib/workflow-types';
 
 export function useWorkflow() {
@@ -9,6 +9,34 @@ export function useWorkflow() {
     connections: [],
     status: 'draft'
   });
+
+  // Add test nodes on initial load
+  const [testNodesAdded, setTestNodesAdded] = useState(false);
+  
+  useEffect(() => {
+    if (!testNodesAdded) {
+      setWorkflow(prev => ({
+        ...prev,
+        nodes: [
+          {
+            id: 'test-node-1',
+            type: 'webhook',
+            position: { x: 200, y: 200 },
+            data: {},
+            status: 'idle'
+          },
+          {
+            id: 'test-node-2',
+            type: 'ai-transform',
+            position: { x: 450, y: 200 },
+            data: {},
+            status: 'idle'
+          }
+        ]
+      }));
+      setTestNodesAdded(true);
+    }
+  }, [testNodesAdded]);
 
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [draggedNode, setDraggedNode] = useState<{ type: string; offset: { x: number; y: number } } | null>(null);
@@ -108,13 +136,21 @@ export function useWorkflow() {
   }, []);
 
   const addConnection = useCallback((source: string, target: string) => {
+    console.log('=== addConnection CALLED ===');
+    console.log('Source:', source, 'Target:', target);
+    
     setWorkflow(prev => {
+      console.log('addConnection - current state before update:');
+      console.log('  - nodes:', prev.nodes.map(n => ({ id: n.id, type: n.type })));
+      console.log('  - connections:', prev.connections);
+      
       // Prevent duplicate connections using current state
       const exists = prev.connections.some(
         conn => conn.source === source && conn.target === target
       );
       
       if (exists) {
+        console.log('Connection already exists, skipping');
         return prev;
       }
 
@@ -124,10 +160,19 @@ export function useWorkflow() {
         target
       };
 
-      return {
+      console.log('Creating new connection:', newConnection);
+
+      const newState = {
         ...prev,
         connections: [...prev.connections, newConnection]
       };
+      
+      console.log('New state after addConnection:');
+      console.log('  - nodes:', newState.nodes.map(n => ({ id: n.id, type: n.type })));
+      console.log('  - connections:', newState.connections);
+      console.log('=== addConnection END ===');
+      
+      return newState;
     });
   }, []);
 
