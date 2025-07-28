@@ -109,6 +109,12 @@ export function WorkflowNodeComponent({
     // Could be extended later for node-specific actions
   };
 
+  // Added from Chatgpt
+  const handleConnectClick = (e: React.MouseEvent) => {
+  e.stopPropagation();
+  onAddConnection?.(node.id);
+  };
+
   return (
     <div
       data-node

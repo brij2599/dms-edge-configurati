@@ -123,6 +123,16 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
     openNodeLibrary();
   };
 
+  //Code added for connection. Taken from Chatgpt
+  const handleNodeClick = (targetId: string) => {
+  if (connectionSource) {
+    addConnection(connectionSource, targetId);
+    setConnectionSourceNode(null);
+  } else {
+    setConnectionSourceNode(targetId);
+  }
+};
+
   return (
     <div 
       ref={canvasRef}
@@ -205,7 +215,8 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
           onSelect={handleNodeSelect}
           onMove={handleNodeMove}
           onConnectionStart={handleConnectionStart}
-          onAddConnection={handleAddConnection}
+          // onAddConnection={handleAddConnection} - Commented due to Chatgpt
+          onAddConnection={handleNodeClick} //added from Chatgpt
         />
       ))}
       
