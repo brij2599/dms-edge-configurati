@@ -18,6 +18,7 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
     updateNode, 
     selectNode,
     addConnection,
+    clearAllConnections,
     closeNodeLibrary,
     openNodeLibrary,
     setConnectionSourceNode 
@@ -96,15 +97,27 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
   };
 
   const handleNodeSelect = (nodeId: string) => {
+    // Handle connection completion when a node is clicked and we have a connection source
+    if (connectionSource && connectionSource !== nodeId) {
+      addConnection(connectionSource, nodeId);
+      setConnectionSourceNode(null);
+      return;
+    }
+    
+    // Handle manual connection mode
     if (connecting) {
       // Complete connection
       if (connecting !== nodeId) {
         addConnection(connecting, nodeId);
       }
       setConnecting(null);
-    } else {
-      selectNode(nodeId);
     }
+    // Don't select node on single click - wait for double click
+  };
+
+  const handleNodeDoubleClick = (nodeId: string) => {
+    // Double click opens the configuration panel
+    selectNode(nodeId);
   };
 
   // Handle connection start (right-click or ctrl+click)
@@ -123,15 +136,18 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
     openNodeLibrary();
   };
 
-  //Code added for connection. Taken from Chatgpt
-  const handleNodeClick = (targetId: string) => {
-  if (connectionSource) {
-    addConnection(connectionSource, targetId);
-    setConnectionSourceNode(null);
-  } else {
-    setConnectionSourceNode(targetId);
-  }
-};
+  // Handle node click for connection (when user clicks on existing nodes to connect them)
+  const handleNodeConnectionClick = (targetId: string) => {
+    console.log('handleNodeConnectionClick called with targetId:', targetId);
+    console.log('Current connectionSource:', connectionSource);
+    
+    if (connectionSource && connectionSource !== targetId) {
+      // Complete the connection between existing nodes
+      console.log('Creating connection from', connectionSource, 'to', targetId);
+      addConnection(connectionSource, targetId);
+      setConnectionSourceNode(null); // Clear connection source
+    }
+  };
 
   return (
     <div 
@@ -197,7 +213,7 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
             </button>
             <button 
               onClick={() => {
-                setWorkflow(prev => ({ ...prev, connections: [] }));
+                clearAllConnections();
                 console.log('All connections cleared');
               }}
               className="block w-full bg-red-600 px-2 py-1 rounded text-white hover:bg-red-700 text-xs"
@@ -213,10 +229,10 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
           key={node.id}
           node={node}
           onSelect={handleNodeSelect}
+          onDoubleClick={handleNodeDoubleClick}
           onMove={handleNodeMove}
           onConnectionStart={handleConnectionStart}
-          // onAddConnection={handleAddConnection} - Commented due to Chatgpt
-          onAddConnection={handleNodeClick} //added from Chatgpt
+          onAddConnection={handleAddConnection}
         />
       ))}
       

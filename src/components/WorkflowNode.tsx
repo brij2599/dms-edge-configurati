@@ -9,6 +9,7 @@ import { Plus, WarningTriangle } from '@phosphor-icons/react';
 interface WorkflowNodeComponentProps {
   node: WorkflowNode;
   onSelect: (nodeId: string) => void;
+  onDoubleClick?: (nodeId: string) => void;
   onMove: (nodeId: string, position: { x: number; y: number }) => void;
   onConnectionStart?: (nodeId: string, e: React.MouseEvent) => void;
   onAddConnection?: (sourceNodeId: string) => void;
@@ -18,6 +19,7 @@ interface WorkflowNodeComponentProps {
 export function WorkflowNodeComponent({ 
   node, 
   onSelect, 
+  onDoubleClick,
   onMove,
   onConnectionStart,
   onAddConnection,
@@ -39,6 +41,14 @@ export function WorkflowNodeComponent({
   };
 
   const handleDoubleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onDoubleClick) {
+      onDoubleClick(node.id);
+    }
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     onSelect(node.id);
@@ -109,11 +119,7 @@ export function WorkflowNodeComponent({
     // Could be extended later for node-specific actions
   };
 
-  // Added from Chatgpt
-  const handleConnectClick = (e: React.MouseEvent) => {
-  e.stopPropagation();
-  onAddConnection?.(node.id);
-  };
+
 
   return (
     <div
@@ -127,6 +133,7 @@ export function WorkflowNodeComponent({
         ...style
       }}
       onMouseDown={handleMouseDown}
+      onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
       className="flex flex-col items-center"
@@ -190,7 +197,7 @@ export function WorkflowNodeComponent({
       </div>
 
       {/* Connection Line with Plus Button */}
-      <div className="absolute left-[110px] top-[40px]">
+      <div className="absolute left-[110px] top-[40px] transform -translate-y-1/2">
         {/* Horizontal line extending from the output port */}
         <div className="w-16 h-0.5 bg-gray-400" />
         

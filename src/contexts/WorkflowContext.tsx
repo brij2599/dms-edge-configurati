@@ -12,6 +12,7 @@ interface WorkflowContextType {
   deleteNode: ReturnType<typeof useWorkflow>['deleteNode'];
   addConnection: ReturnType<typeof useWorkflow>['addConnection'];
   deleteConnection: ReturnType<typeof useWorkflow>['deleteConnection'];
+  clearAllConnections: ReturnType<typeof useWorkflow>['clearAllConnections'];
   selectNode: ReturnType<typeof useWorkflow>['selectNode'];
   startDrag: ReturnType<typeof useWorkflow>['startDrag'];
   endDrag: ReturnType<typeof useWorkflow>['endDrag'];

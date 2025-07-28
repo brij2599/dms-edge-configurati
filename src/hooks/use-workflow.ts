@@ -182,6 +182,13 @@ export function useWorkflow() {
     }));
   }, []);
 
+  const clearAllConnections = useCallback(() => {
+    setWorkflow(prev => ({
+      ...prev,
+      connections: []
+    }));
+  }, []);
+
   const selectNode = useCallback((nodeId: string | null) => {
     setSelectedNodeId(nodeId);
     
@@ -231,6 +238,7 @@ export function useWorkflow() {
     deleteNode,
     addConnection,
     deleteConnection,
+    clearAllConnections,
     selectNode,
     startDrag,
     endDrag,
