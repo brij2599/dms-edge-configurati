@@ -18,7 +18,6 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
     updateNode, 
     selectNode,
     addConnection,
-    clearAllConnections,
     closeNodeLibrary,
     openNodeLibrary,
     setConnectionSourceNode 
@@ -26,50 +25,25 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
   
   const canvasRef = React.useRef<HTMLDivElement>(null);
   const [canvasOffset, setCanvasOffset] = React.useState({ x: 0, y: 0 });
-  const [connecting, setConnecting] = React.useState<string | null>(null);
-
-  // Handle escape key to cancel connections
-  React.useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && connecting) {
-        setConnecting(null);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [connecting]);
 
   const handlePlusButtonClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation(); // Prevent canvas click handler
+    e.stopPropagation();
     openNodeLibrary();
   };
 
   const handleCanvasClick = (e: React.MouseEvent) => {
-    // Check if click is on canvas background or empty space
     const target = e.target as HTMLElement;
-    const canvas = e.currentTarget as HTMLElement;
     
-    // Get the actual click coordinates relative to the canvas
-    const rect = canvas.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const clickY = e.clientY - rect.top;
-    
-    // Check if click is on an empty area (not hitting any nodes or UI elements)
     const isOnNode = target.closest('[data-node]');
     const isOnLibrary = target.closest('[data-node-library]');
     const isOnButton = target.closest('button') || target.closest('[role="button"]');
     const isOnCard = target.closest('[data-testid="card"]') || target.closest('.card');
     
-    // Only close if we're clicking on truly empty canvas space
     if (!isOnNode && !isOnLibrary && !isOnButton && !isOnCard) {
       selectNode(null);
       closeNodeLibrary();
-      setConnectionSourceNode(null); // Clear connection source
-      if (connecting) {
-        setConnecting(null);
-      }
+      setConnectionSourceNode(null);
     }
   };
 
@@ -97,50 +71,20 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
   };
 
   const handleNodeSelect = (nodeId: string) => {
-    // Handle connection completion when a node is clicked and we have a connection source
     if (connectionSource && connectionSource !== nodeId) {
       addConnection(connectionSource, nodeId);
       setConnectionSourceNode(null);
       return;
     }
-    
-    // Handle manual connection mode
-    if (connecting) {
-      // Complete connection
-      if (connecting !== nodeId) {
-        addConnection(connecting, nodeId);
-      }
-      setConnecting(null);
-    }
-    // Don't select node on single click - wait for double click
   };
 
   const handleNodeDoubleClick = (nodeId: string) => {
-    // Double click opens the configuration panel
     selectNode(nodeId);
   };
 
-  // Handle connection start (right-click or ctrl+click)
-  const handleConnectionStart = (nodeId: string, e: React.MouseEvent) => {
-    if (e.ctrlKey || e.metaKey) {
-      e.preventDefault();
-      setConnecting(nodeId);
-    }
-  };
-
-  // Handle adding a connection from a node's plus button
   const handleAddConnection = (sourceNodeId: string) => {
     setConnectionSourceNode(sourceNodeId);
     openNodeLibrary();
-  };
-
-  // Handle node click for connection (when user clicks on existing nodes to connect them)
-  const handleNodeConnectionClick = (targetId: string) => {
-    if (connectionSource && connectionSource !== targetId) {
-      // Complete the connection between existing nodes
-      addConnection(connectionSource, targetId);
-      setConnectionSourceNode(null); // Clear connection source
-    }
   };
 
   return (
@@ -160,7 +104,6 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
     >
       <Connections nodes={workflow.nodes} connections={workflow.connections} />
       
-      {/* Workflow Name Badge */}
       <div className="absolute top-6 left-6 z-10">
         <div className="bg-red-500 text-white px-4 py-2 rounded-lg font-medium text-sm shadow-sm">
           {workflow.name}
@@ -174,16 +117,9 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
           onSelect={handleNodeSelect}
           onDoubleClick={handleNodeDoubleClick}
           onMove={handleNodeMove}
-          onConnectionStart={handleConnectionStart}
           onAddConnection={handleAddConnection}
         />
       ))}
-      
-      {connecting && (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium z-50 animate-in slide-in-from-top-2">
-          Click another node to connect, or press Escape to cancel
-        </div>
-      )}
       
       {workflow.nodes.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center">
@@ -197,14 +133,12 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
             </Button>
             <h3 className="text-lg font-medium text-foreground mb-2">Start Building Your Workflow</h3>
             <p className="text-muted-foreground max-w-md">
-              Click the plus button to add nodes and begin creating your ETL pipeline. 
-              Hold Ctrl and click nodes to connect them.
+              Click the plus button to add nodes and begin creating your ETL pipeline.
             </p>
           </div>
         </div>
       )}
       
-      {/* Floating Add Node Button */}
       <Button
         onClick={handlePlusButtonClick}
         size="icon"

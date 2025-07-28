@@ -33,48 +33,34 @@ function WorkflowBuilder() {
     : null;
 
   const handleNodeClick = (nodeType: string) => {
-    // Calculate a position in the center of the canvas with some randomization
-    const canvasWidth = 800; // Approximate canvas width
-    const canvasHeight = 600; // Approximate canvas height
+    const canvasWidth = 800;
+    const canvasHeight = 600;
     let centerX = canvasWidth / 2;
     let centerY = canvasHeight / 2;
     
-    // If we're connecting from another node, position the new node to the right
     if (connectionSource) {
       const sourceNode = workflow.nodes.find(node => node.id === connectionSource);
       if (sourceNode) {
-        centerX = sourceNode.position.x + 200; // Position to the right of source
-        centerY = sourceNode.position.y; // Same height as source
+        centerX = sourceNode.position.x + 200;
+        centerY = sourceNode.position.y;
       } else {
-        // Clear invalid connection source
         setConnectionSourceNode(null);
       }
     } else {
-      // Add some randomization to avoid overlapping nodes
-      const offsetX = (Math.random() - 0.5) * 200; // Random offset between -100 and 100
+      const offsetX = (Math.random() - 0.5) * 200;
       const offsetY = (Math.random() - 0.5) * 200;
       centerX += offsetX;
       centerY += offsetY;
     }
     
-    const position = {
-      x: centerX,
-      y: centerY
-    };
-    
+    const position = { x: centerX, y: centerY };
     const shouldAutoConnect = !!connectionSource;
     const sourceNodeId = connectionSource || undefined;
     
-    // Add node with auto-connection if there's a source
     const newNodeId = addNode(nodeType, position, shouldAutoConnect, sourceNodeId);
-    
-    // Clear the connection source after node is added (regardless of whether it was used)
     setConnectionSourceNode(null);
-    
-    // Close the node library after adding a node
     closeNodeLibrary();
     
-    // Find the node name for the toast
     const nodeInfo = NODE_TYPES.find(node => node.id === nodeType);
     const nodeName = nodeInfo ? nodeInfo.name : nodeType;
     toast.success(`${nodeName} node added to canvas`);
