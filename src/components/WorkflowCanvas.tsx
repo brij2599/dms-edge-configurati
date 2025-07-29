@@ -117,7 +117,7 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
         </div>
       </div>
       
-      {workflow.nodes.map(node => (
+      {workflow.nodes.map((node, index) => (
         <WorkflowNodeComponent
           key={node.id}
           node={node}
@@ -126,6 +126,7 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
           onDoubleClick={handleNodeDoubleClick}
           onMove={handleNodeMove}
           onAddConnection={handleAddConnection}
+          isFirstNode={index === 0}
         />
       ))}
       

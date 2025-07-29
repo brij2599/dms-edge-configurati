@@ -14,6 +14,7 @@ interface WorkflowNodeComponentProps {
   onMove: (nodeId: string, position: { x: number; y: number }) => void;
   onAddConnection?: (sourceNodeId: string) => void;
   style?: React.CSSProperties;
+  isFirstNode?: boolean;
 }
 
 export function WorkflowNodeComponent({ 
@@ -23,7 +24,8 @@ export function WorkflowNodeComponent({
   onDoubleClick,
   onMove,
   onAddConnection,
-  style 
+  style,
+  isFirstNode = false
 }: WorkflowNodeComponentProps) {
   const nodeType = NODE_TYPES.find(type => type.id === node.type);
   const IconComponent = nodeType ? (PhosphorIcons as any)[nodeType.icon] || PhosphorIcons.Circle : PhosphorIcons.Circle;
@@ -137,51 +139,107 @@ export function WorkflowNodeComponent({
       onContextMenu={handleContextMenu}
       className="flex flex-col items-center"
     >
-      <div className={`relative w-28 h-20 bg-card rounded-xl ${getBorderStyle()} hover:shadow-lg transition-all duration-200 ${
-        isDragging ? 'shadow-xl scale-105' : ''
-      } ${node.selected ? 'shadow-lg' : 'shadow-sm'}`}>
-        
-        <div 
-          className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-gray-500 hover:bg-gray-600 rounded-full border-2 border-background cursor-pointer transition-all duration-200 hover:scale-110 shadow-md"
-          title="Input"
-        />
-        
-        <div 
-          className="absolute -right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-gray-500 hover:bg-gray-600 rounded-full border-2 border-background cursor-pointer transition-all duration-200 hover:scale-110 shadow-md"
-          title="Output"
-        />
+      {isFirstNode ? (
+        // Special shape for first node - larger rounded square
+        <div className={`relative w-32 h-32 bg-card rounded-2xl ${getBorderStyle()} hover:shadow-lg transition-all duration-200 ${
+          isDragging ? 'shadow-xl scale-105' : ''
+        } ${node.selected ? 'shadow-lg' : 'shadow-sm'}`}>
+          
+          {/* Output connector on the right side */}
+          <div 
+            className="absolute -right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-gray-500 hover:bg-gray-600 rounded-full border-2 border-background cursor-pointer transition-all duration-200 hover:scale-110 shadow-md"
+            title="Output"
+          />
 
-        <div className="flex items-center justify-center h-full">
-          <div className="flex flex-col items-center gap-1">
-            <div 
-              className="w-10 h-10 rounded-lg flex items-center justify-center text-white shadow-sm"
-              style={{ backgroundColor: nodeType?.color || '#6b7280' }}
-            >
-              <IconComponent size={24} weight="fill" />
+          <div className="flex items-center justify-center h-full">
+            <div className="flex flex-col items-center gap-1">
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-sm"
+                style={{ backgroundColor: nodeType?.color || '#6b7280' }}
+              >
+                <IconComponent size={32} weight="fill" />
+              </div>
             </div>
           </div>
+
+          {(node.status === 'error' || node.type === 'activecampaign') && (
+            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border-2 border-white">
+              <WarningTriangle size={12} className="text-white" weight="fill" />
+            </div>
+          )}
+
+          {node.status && node.status !== 'idle' && node.status !== 'error' && (
+            <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${getStatusColor()}`} />
+          )}
+
+          {node.type === 'webhook' && (
+            <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+              <div className="bg-gray-700 text-white text-xs px-2 py-0.5 rounded-md font-medium">PUT</div>
+            </div>
+          )}
         </div>
+      ) : (
+        // Regular shape for other nodes
+        <div className={`relative w-28 h-20 bg-card rounded-xl ${getBorderStyle()} hover:shadow-lg transition-all duration-200 ${
+          isDragging ? 'shadow-xl scale-105' : ''
+        } ${node.selected ? 'shadow-lg' : 'shadow-sm'}`}>
+          
+          <div 
+            className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-gray-500 hover:bg-gray-600 rounded-full border-2 border-background cursor-pointer transition-all duration-200 hover:scale-110 shadow-md"
+            title="Input"
+          />
+          
+          <div 
+            className="absolute -right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-gray-500 hover:bg-gray-600 rounded-full border-2 border-background cursor-pointer transition-all duration-200 hover:scale-110 shadow-md"
+            title="Output"
+          />
 
-        {(node.status === 'error' || node.type === 'activecampaign') && (
-          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border-2 border-white">
-            <WarningTriangle size={12} className="text-white" weight="fill" />
+          <div className="flex items-center justify-center h-full">
+            <div className="flex flex-col items-center gap-1">
+              <div 
+                className="w-10 h-10 rounded-lg flex items-center justify-center text-white shadow-sm"
+                style={{ backgroundColor: nodeType?.color || '#6b7280' }}
+              >
+                <IconComponent size={24} weight="fill" />
+              </div>
+            </div>
           </div>
-        )}
 
-        {node.status && node.status !== 'idle' && node.status !== 'error' && (
-          <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${getStatusColor()}`} />
-        )}
+          {(node.status === 'error' || node.type === 'activecampaign') && (
+            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border-2 border-white">
+              <WarningTriangle size={12} className="text-white" weight="fill" />
+            </div>
+          )}
 
-        {node.type === 'webhook' && (
-          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-            <div className="bg-gray-700 text-white text-xs px-2 py-0.5 rounded-md font-medium">PUT</div>
-          </div>
-        )}
-      </div>
+          {node.status && node.status !== 'idle' && node.status !== 'error' && (
+            <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${getStatusColor()}`} />
+          )}
 
-      {/* Connection handle - only show if node doesn't have outgoing connections */}
-      {!hasOutgoingConnection && (
+          {node.type === 'webhook' && (
+            <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+              <div className="bg-gray-700 text-white text-xs px-2 py-0.5 rounded-md font-medium">PUT</div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Connection handle - only show if node doesn't have outgoing connections and not first node */}
+      {!hasOutgoingConnection && !isFirstNode && (
         <div className="absolute left-[110px] top-[40px] transform -translate-y-1/2">
+          <div className="w-16 h-0.5 bg-gray-400" />
+          
+          <div
+            className="absolute top-[-16px] left-[56px] w-8 h-8 bg-gray-200 hover:bg-gray-300 border-2 border-gray-400 rounded-md flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110"
+            onClick={handleAddConnection}
+          >
+            <Plus size={16} className="text-gray-600" />
+          </div>
+        </div>
+      )}
+
+      {/* Connection handle for first node - positioned differently */}
+      {!hasOutgoingConnection && isFirstNode && (
+        <div className="absolute left-[126px] top-[64px] transform -translate-y-1/2">
           <div className="w-16 h-0.5 bg-gray-400" />
           
           <div
