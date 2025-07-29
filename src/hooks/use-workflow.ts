@@ -5,7 +5,15 @@ export function useWorkflow() {
   const [workflow, setWorkflow] = useState<Workflow>({
     id: 'workflow-1',
     name: 'New ETL Workflow',
-    nodes: [],
+    nodes: [
+      {
+        id: 'node-demo-first',
+        type: 'webhook',
+        position: { x: 400, y: 300 },
+        data: {},
+        status: 'idle'
+      }
+    ],
     connections: [],
     status: 'draft'
   });
