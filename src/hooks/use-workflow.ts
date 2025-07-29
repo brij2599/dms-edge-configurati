@@ -41,6 +41,7 @@ export function useWorkflow() {
             source: sourceNodeId,
             target: nodeId
           };
+          console.log('Creating auto-connection:', newConnection);
           updatedConnections = [...prev.connections, newConnection];
         }
       }
@@ -145,6 +146,14 @@ export function useWorkflow() {
     setIsNodeLibraryOpen(false);
   }, []);
 
+  const clearWorkflow = useCallback(() => {
+    setWorkflow(prev => ({
+      ...prev,
+      nodes: [],
+      connections: []
+    }));
+  }, []);
+
   const setConnectionSourceNode = useCallback((sourceNodeId: string | null) => {
     setConnectionSource(sourceNodeId);
   }, []);
@@ -161,6 +170,7 @@ export function useWorkflow() {
     addConnection,
     deleteConnection,
     clearAllConnections,
+    clearWorkflow,
     selectNode,
     startDrag,
     endDrag,

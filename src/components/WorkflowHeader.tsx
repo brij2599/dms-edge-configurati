@@ -11,6 +11,7 @@ interface WorkflowHeaderProps {
   onRun: () => void;
   onStop: () => void;
   onSave: () => void;
+  onTestConnection?: () => void;
 }
 
 export function WorkflowHeader({ 
@@ -18,7 +19,8 @@ export function WorkflowHeader({
   workflowStatus = 'draft',
   onRun,
   onStop,
-  onSave 
+  onSave,
+  onTestConnection
 }: WorkflowHeaderProps) {
   const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(workflowName);
@@ -82,6 +84,12 @@ export function WorkflowHeader({
       </div>
 
       <div className="flex items-center gap-2">
+        {onTestConnection && (
+          <Button variant="secondary" size="sm" onClick={onTestConnection}>
+            Test Connection
+          </Button>
+        )}
+        
         <Button variant="outline" size="sm" onClick={onSave}>
           <Save size={16} />
           Save

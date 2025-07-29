@@ -26,6 +26,13 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
   const canvasRef = React.useRef<HTMLDivElement>(null);
   const [canvasOffset, setCanvasOffset] = React.useState({ x: 0, y: 0 });
 
+  React.useEffect(() => {
+    console.log('Canvas Debug - Nodes:', workflow.nodes.length, 'Connections:', workflow.connections.length);
+    if (workflow.connections.length > 0) {
+      console.log('Connections in workflow:', workflow.connections);
+    }
+  }, [workflow.nodes, workflow.connections]);
+
   const handlePlusButtonClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();

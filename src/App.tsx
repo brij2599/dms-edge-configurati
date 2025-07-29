@@ -17,6 +17,7 @@ function WorkflowBuilder() {
     connectionSource,
     addNode,
     addConnection,
+    clearWorkflow,
     startDrag, 
     endDrag,
     selectNode,
@@ -58,6 +59,14 @@ function WorkflowBuilder() {
     const sourceNodeId = connectionSource || undefined;
     
     const newNodeId = addNode(nodeType, position, shouldAutoConnect, sourceNodeId);
+    console.log('Added node:', {
+      newNodeId,
+      nodeType,
+      position,
+      shouldAutoConnect,
+      sourceNodeId,
+      connectionSource
+    });
     setConnectionSourceNode(null);
     closeNodeLibrary();
     
@@ -94,6 +103,23 @@ function WorkflowBuilder() {
     // Here you would save to your backend
   };
 
+  const handleTestConnection = () => {
+    // Clear existing workflow
+    clearWorkflow();
+    
+    // Add two nodes for testing
+    setTimeout(() => {
+      const node1Id = addNode('webhook', { x: 100, y: 100 });
+      setTimeout(() => {
+        const node2Id = addNode('ai-transform', { x: 350, y: 100 });
+        setTimeout(() => {
+          addConnection(node1Id, node2Id);
+          toast.success('Test connection created');
+        }, 200);
+      }, 200);
+    }, 100);
+  };
+
   const handleCloseConfig = () => {
     selectNode(null);
   };
@@ -106,6 +132,7 @@ function WorkflowBuilder() {
         onRun={handleWorkflowRun}
         onStop={handleWorkflowStop}
         onSave={handleWorkflowSave}
+        onTestConnection={handleTestConnection}
       />
       
       <div className="flex-1 flex overflow-hidden">

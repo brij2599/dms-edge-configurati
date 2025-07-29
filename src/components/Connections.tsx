@@ -7,35 +7,27 @@ interface ConnectionsProps {
 }
 
 export function Connections({ nodes, connections }: ConnectionsProps) {
-  React.useEffect(() => {
-    console.log('Connections render - nodes:', nodes.length, 'connections:', connections.length);
-    console.log('Connections details:', connections);
-    console.log('Nodes details:', nodes.map(n => ({ id: n.id, position: n.position, type: n.type })));
-  }, [nodes, connections]);
-
   const getNodeConnectionPoints = (nodeId: string) => {
     const node = nodes.find(n => n.id === nodeId);
     if (!node) {
-      console.warn('getNodeConnectionPoints: Node not found:', nodeId);
       return { input: { x: 0, y: 0 }, output: { x: 0, y: 0 } };
     }
     
     // Node width is 112px (w-28), height 80px (h-20)
+    // Input port is at -left-2 (-8px from left edge)
+    // Output port is at -right-2 (-8px from right edge, so +120px from left edge)
     const centerY = node.position.y + 40; // half height
     
-    const points = {
+    return {
       input: {
-        x: node.position.x - 8, // left edge with port offset
+        x: node.position.x - 8, // -left-2 position
         y: centerY
       },
       output: {
-        x: node.position.x + 112 + 8, // right edge with port offset  
+        x: node.position.x + 120, // -right-2 position (112px + 8px)
         y: centerY
       }
     };
-    
-    console.log('getNodeConnectionPoints for', nodeId, ':', points, 'node position:', node.position);
-    return points;
   };
 
   const createPath = (start: { x: number; y: number }, end: { x: number; y: number }) => {
@@ -55,6 +47,8 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
     <svg
       className="absolute inset-0 pointer-events-none"
       style={{ zIndex: 1 }}
+      width="100%"
+      height="100%"
     >
       <defs>
         <marker
@@ -77,16 +71,7 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
           // Only render connections where both source and target nodes exist
           const sourceExists = nodes.some(n => n.id === connection.source);
           const targetExists = nodes.some(n => n.id === connection.target);
-          const isValid = sourceExists && targetExists;
-          console.log('Connection filter check:', {
-            connectionId: connection.id,
-            source: connection.source,
-            target: connection.target,
-            sourceExists,
-            targetExists,
-            isValid
-          });
-          return isValid;
+          return sourceExists && targetExists;
         })
         .map(connection => {
           const sourcePoints = getNodeConnectionPoints(connection.source);
@@ -95,26 +80,20 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
           const start = sourcePoints.output;
           const end = targetPoints.input;
           
-          console.log('Rendering connection:', {
-            connectionId: connection.id,
-            source: connection.source,
-            target: connection.target,
-            start,
-            end,
-            pathData: createPath(start, end)
-          });
-          
           return (
-            <path
-              key={connection.id}
-              d={createPath(start, end)}
-              stroke="#ef4444"
-              strokeWidth="4"
-              fill="none"
-              markerEnd="url(#arrowhead)"
-              className="drop-shadow-sm"
-              style={{ opacity: 1 }} // Ensure visibility
-            />
+            <g key={connection.id}>
+              <path
+                d={createPath(start, end)}
+                stroke="#ef4444"
+                strokeWidth="3"
+                fill="none"
+                markerEnd="url(#arrowhead)"
+                className="drop-shadow-sm"
+              />
+              {/* Debug circles to show connection points */}
+              <circle cx={start.x} cy={start.y} r="4" fill="#22c55e" />
+              <circle cx={end.x} cy={end.y} r="4" fill="#3b82f6" />
+            </g>
           );
         })}
     </svg>
