@@ -1,13 +1,14 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { WorkflowNode } from '@/lib/workflow-types';
+import { WorkflowNode, NodeConnection } from '@/lib/workflow-types';
 import { NODE_TYPES } from '@/lib/workflow-types';
 import * as PhosphorIcons from '@phosphor-icons/react';
 import { Plus, WarningTriangle } from '@phosphor-icons/react';
 
 interface WorkflowNodeComponentProps {
   node: WorkflowNode;
+  connections?: NodeConnection[];
   onSelect: (nodeId: string) => void;
   onDoubleClick?: (nodeId: string) => void;
   onMove: (nodeId: string, position: { x: number; y: number }) => void;
@@ -17,6 +18,7 @@ interface WorkflowNodeComponentProps {
 
 export function WorkflowNodeComponent({ 
   node, 
+  connections = [],
   onSelect, 
   onDoubleClick,
   onMove,
@@ -25,6 +27,14 @@ export function WorkflowNodeComponent({
 }: WorkflowNodeComponentProps) {
   const nodeType = NODE_TYPES.find(type => type.id === node.type);
   const IconComponent = nodeType ? (PhosphorIcons as any)[nodeType.icon] || PhosphorIcons.Circle : PhosphorIcons.Circle;
+  
+  // Check if this node has any outgoing connections
+  const hasOutgoingConnection = connections.some(conn => conn.source === node.id);
+  
+  // Debug log to help verify the logic
+  React.useEffect(() => {
+    console.log(`Node ${node.id} has outgoing connection: ${hasOutgoingConnection}`);
+  }, [hasOutgoingConnection, node.id]);
   
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragStart, setDragStart] = React.useState<{ x: number; y: number } | null>(null);
@@ -169,17 +179,20 @@ export function WorkflowNodeComponent({
         )}
       </div>
 
-      <div className="absolute left-[110px] top-[40px] transform -translate-y-1/2">
-        <div className="w-16 h-0.5 bg-gray-400" />
-        
-        <div
-          className="absolute top-[-16px] left-[56px] w-8 h-8 bg-gray-200 hover:bg-gray-300 border-2 border-gray-400 rounded-md flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110"
-          onClick={handleAddConnection}
-          title="Add connected node"
-        >
-          <Plus size={16} className="text-gray-600" />
+      {/* Connection handle - only show if node doesn't have outgoing connections */}
+      {!hasOutgoingConnection && (
+        <div className="absolute left-[110px] top-[40px] transform -translate-y-1/2">
+          <div className="w-16 h-0.5 bg-gray-400" />
+          
+          <div
+            className="absolute top-[-16px] left-[56px] w-8 h-8 bg-gray-200 hover:bg-gray-300 border-2 border-gray-400 rounded-md flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110"
+            onClick={handleAddConnection}
+            title="Add connected node"
+          >
+            <Plus size={16} className="text-gray-600" />
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="mt-2 text-center">
         <h4 className="font-medium text-sm text-foreground">

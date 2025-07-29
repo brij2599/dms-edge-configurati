@@ -121,6 +121,7 @@ export function WorkflowCanvas({ draggedNode, onDragEnd }: WorkflowCanvasProps) 
         <WorkflowNodeComponent
           key={node.id}
           node={node}
+          connections={workflow.connections}
           onSelect={handleNodeSelect}
           onDoubleClick={handleNodeDoubleClick}
           onMove={handleNodeMove}
