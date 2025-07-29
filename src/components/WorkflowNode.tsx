@@ -186,11 +186,11 @@ export function WorkflowNodeComponent({
           
           <div
             className="absolute top-[-16px] left-[56px] w-8 h-8 bg-gray-200 hover:bg-gray-300 border-2 border-gray-400 rounded-md flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110"
-            onClick={handleAddConnection}
-            title="Add connected node"
-          >
+        </div>
+      )}
+
             <Plus size={16} className="text-gray-600" />
-          </div>
+        <h4 className="font-medium text-sm text-foreground">
         </div>
       )}
 
