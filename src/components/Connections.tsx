@@ -20,29 +20,28 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
     
     if (isFirstNode) {
       // First node: width is 80px (w-20), height 80px (h-20)
-      // Input port is at -left-2 (-8px from left edge)
-      // Output port is at -right-2 (-8px from right edge, so +88px from left edge)
+      // The output port center is at the right edge: position.x + 80px (width) + 0px (port extends to right edge)
       return {
         input: {
-          x: node.position.x - 8, // -left-2 position
+          x: node.position.x, // No input port for first node
           y: centerY
         },
         output: {
-          x: node.position.x + 88, // -right-2 position (80px + 8px)
+          x: node.position.x + 80, // Right edge of the node (80px width)
           y: centerY
         }
       };
     } else {
       // Regular node: width is 112px (w-28), height 80px (h-20)
-      // Input port is at -left-2 (-8px from left edge)
-      // Output port is at -right-2 (-8px from right edge, so +120px from left edge)
+      // Input port center is at left edge: position.x + 0px 
+      // Output port center is at right edge: position.x + 112px (width)
       return {
         input: {
-          x: node.position.x - 8, // -left-2 position
+          x: node.position.x, // Left edge of the node
           y: centerY
         },
         output: {
-          x: node.position.x + 120, // -right-2 position (112px + 8px)
+          x: node.position.x + 112, // Right edge of the node (112px width)
           y: centerY
         }
       };
@@ -109,9 +108,6 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
                 markerEnd="url(#arrowhead)"
                 className="drop-shadow-sm"
               />
-              {/* Debug circles to show connection points */}
-              <circle cx={start.x} cy={start.y} r="4" fill="#22c55e" />
-              <circle cx={end.x} cy={end.y} r="4" fill="#3b82f6" />
             </g>
           );
         })}

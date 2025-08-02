@@ -154,7 +154,7 @@ export function WorkflowNodeComponent({
           />
 
           {/* Chat/conversation icons in the center */}
-          <div className="flex items-center justify-center h-full">
+          <div className="flex items-center justify-center h-full rounded-tl-lg">
             <div className="flex items-center justify-center space-x-1">
               {/* Main chat bubble */}
               <ChatCircle size={20} className="text-gray-800" weight="fill" />
@@ -174,7 +174,6 @@ export function WorkflowNodeComponent({
             <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${getStatusColor()}`} />
           )}
         </div>
-
         {/* Connection handle - only show if node doesn't have outgoing connections */}
         {!hasOutgoingConnection && (
           <div className="absolute left-[78px] top-[40px] transform -translate-y-1/2">
@@ -188,7 +187,6 @@ export function WorkflowNodeComponent({
             </div>
           </div>
         )}
-
         <div className="mt-3 text-center">
           <h4 className="font-medium text-sm text-foreground">
             {nodeType?.name || 'Start'}
