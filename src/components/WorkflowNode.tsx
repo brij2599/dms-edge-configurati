@@ -143,7 +143,7 @@ export function WorkflowNodeComponent({
         className="flex flex-col items-center"
       >
         {/* Special different corner rounded rectangle for first node */}
-        <div className={`relative w-20 h-20 bg-white rounded-tl-2xl rounded-br-2xl ${getBorderStyle()} hover:shadow-lg transition-all duration-200 ${
+        <div className={`single-rounded-corner relative w-20 h-20 bg-white ${getBorderStyle()} hover:shadow-lg transition-all duration-200 ${
           isDragging ? 'shadow-xl scale-105' : ''
         } ${node.selected ? 'shadow-lg' : 'shadow-md'} border-gray-400`}>
           
