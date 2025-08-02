@@ -53,10 +53,11 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
     const dx = end.x - start.x;
     const dy = end.y - start.y;
     
-    // Control points for bezier curve
-    const cp1x = start.x + Math.abs(dx) * 0.5;
+    // Control points for bezier curve - ensure smooth curves
+    const controlPointOffset = Math.max(Math.abs(dx) * 0.4, 50);
+    const cp1x = start.x + controlPointOffset;
     const cp1y = start.y;
-    const cp2x = end.x - Math.abs(dx) * 0.5;
+    const cp2x = end.x - controlPointOffset;
     const cp2y = end.y;
     
     return `M ${start.x} ${start.y} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${end.x} ${end.y}`;
@@ -72,14 +73,15 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
       <defs>
         <marker
           id="arrowhead"
-          markerWidth="8"
-          markerHeight="6"
-          refX="7"
-          refY="3"
+          markerWidth="10"
+          markerHeight="8"
+          refX="9"
+          refY="4"
           orient="auto"
+          markerUnits="strokeWidth"
         >
           <polygon
-            points="0 0, 8 3, 0 6"
+            points="0 0, 10 4, 0 8"
             fill="#ef4444"
           />
         </marker>
