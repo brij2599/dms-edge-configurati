@@ -7,6 +7,14 @@ interface ConnectionsProps {
 }
 
 export function Connections({ nodes, connections }: ConnectionsProps) {
+  // Add debug logging to track when connections re-render due to node position changes
+  React.useEffect(() => {
+    console.log('Connections component re-rendered with', nodes.length, 'nodes and', connections.length, 'connections');
+    nodes.forEach(node => {
+      console.log(`Node ${node.id} at position (${node.position.x}, ${node.position.y})`);
+    });
+  }, [nodes, connections]);
+
   const getNodeConnectionPoints = (nodeId: string) => {
     const node = nodes.find(n => n.id === nodeId);
     if (!node) {
@@ -60,7 +68,12 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
     const cp2x = end.x - controlPointOffset;
     const cp2y = end.y;
     
-    return `M ${start.x} ${start.y} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${end.x} ${end.y}`;
+    const path = `M ${start.x} ${start.y} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${end.x} ${end.y}`;
+    
+    // Debug log to verify path updates when nodes move
+    console.log(`Path from (${start.x}, ${start.y}) to (${end.x}, ${end.y}): ${path}`);
+    
+    return path;
   };
 
   return (

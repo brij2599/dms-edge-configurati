@@ -107,14 +107,21 @@ function WorkflowBuilder() {
     // Clear existing workflow
     clearWorkflow();
     
-    // Add two nodes for testing
+    // Create a more complex test workflow with 3 connected nodes
     setTimeout(() => {
-      const node1Id = addNode('webhook', { x: 100, y: 100 });
+      const node1Id = addNode('webhook', { x: 150, y: 200 });
       setTimeout(() => {
-        const node2Id = addNode('ai-transform', { x: 350, y: 100 });
+        const node2Id = addNode('ai-transform', { x: 400, y: 200 });
         setTimeout(() => {
-          addConnection(node1Id, node2Id);
-          toast.success('Test connection created');
+          const node3Id = addNode('activecampaign', { x: 650, y: 200 });
+          setTimeout(() => {
+            // Connect nodes in sequence
+            addConnection(node1Id, node2Id);
+            setTimeout(() => {
+              addConnection(node2Id, node3Id);
+              toast.success('Test workflow created - drag nodes to verify arrow tracking');
+            }, 100);
+          }, 200);
         }, 200);
       }, 200);
     }, 100);
