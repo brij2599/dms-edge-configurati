@@ -142,8 +142,8 @@ export function WorkflowNodeComponent({
         onContextMenu={handleContextMenu}
         className="flex flex-col items-center"
       >
-        {/* Special rounded square shape for first node */}
-        <div className={`relative w-20 h-20 bg-white rounded-2xl ${getBorderStyle()} hover:shadow-lg transition-all duration-200 ${
+        {/* Special single rounded corner rectangle for first node */}
+        <div className={`relative w-20 h-20 bg-white rounded-tl-2xl ${getBorderStyle()} hover:shadow-lg transition-all duration-200 ${
           isDragging ? 'shadow-xl scale-105' : ''
         } ${node.selected ? 'shadow-lg' : 'shadow-md'} border-gray-400`}>
           
