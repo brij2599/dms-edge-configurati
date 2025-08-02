@@ -20,28 +20,29 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
     
     if (isFirstNode) {
       // First node: width is 80px (w-20), height 80px (h-20)
-      // The output port center is at the right edge: position.x + 80px (width) + 0px (port extends to right edge)
+      // The output port is positioned at -right-2, which means it extends 8px beyond the right edge
+      // So the actual center is at position.x + 80px (width) + 8px (right offset)
       return {
         input: {
           x: node.position.x, // No input port for first node
           y: centerY
         },
         output: {
-          x: node.position.x + 80, // Right edge of the node (80px width)
+          x: node.position.x + 88, // Right edge + 8px offset for the -right-2 positioning
           y: centerY
         }
       };
     } else {
       // Regular node: width is 112px (w-28), height 80px (h-20)
-      // Input port center is at left edge: position.x + 0px 
-      // Output port center is at right edge: position.x + 112px (width)
+      // Input port is positioned at -left-2 (8px before left edge)
+      // Output port is positioned at -right-2 (8px beyond right edge)
       return {
         input: {
-          x: node.position.x, // Left edge of the node
+          x: node.position.x - 8, // Left edge - 8px offset for the -left-2 positioning
           y: centerY
         },
         output: {
-          x: node.position.x + 112, // Right edge of the node (112px width)
+          x: node.position.x + 120, // Right edge + 8px offset for the -right-2 positioning
           y: centerY
         }
       };
