@@ -147,12 +147,6 @@ export function WorkflowNodeComponent({
           isDragging ? 'shadow-xl scale-105' : ''
         } ${node.selected ? 'shadow-lg' : 'shadow-md'} border-gray-400`}>
           
-          {/* Input connection point */}
-          <div 
-            className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-gray-500 hover:bg-gray-600 rounded-full border-2 border-background cursor-pointer transition-all duration-200 hover:scale-110 shadow-md"
-            title="Input"
-          />
-          
           {/* Output connection point on the right edge */}
           <div 
             className="absolute -right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-gray-500 hover:bg-gray-600 rounded-full border-2 border-background cursor-pointer transition-all duration-200 hover:scale-110 shadow-md"
