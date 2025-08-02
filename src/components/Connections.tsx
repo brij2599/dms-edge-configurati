@@ -13,21 +13,40 @@ export function Connections({ nodes, connections }: ConnectionsProps) {
       return { input: { x: 0, y: 0 }, output: { x: 0, y: 0 } };
     }
     
-    // Node width is 112px (w-28), height 80px (h-20)
-    // Input port is at -left-2 (-8px from left edge)
-    // Output port is at -right-2 (-8px from right edge, so +120px from left edge)
-    const centerY = node.position.y + 40; // half height
+    // Check if this is the first node (special shape)
+    const isFirstNode = node.id === 'node-demo-first' || node.id.startsWith('node-demo-first');
     
-    return {
-      input: {
-        x: node.position.x - 8, // -left-2 position
-        y: centerY
-      },
-      output: {
-        x: node.position.x + 120, // -right-2 position (112px + 8px)
-        y: centerY
-      }
-    };
+    const centerY = node.position.y + 40; // half height (both nodes are h-20, 80px)
+    
+    if (isFirstNode) {
+      // First node: width is 80px (w-20), height 80px (h-20)
+      // Input port is at -left-2 (-8px from left edge)
+      // Output port is at -right-2 (-8px from right edge, so +88px from left edge)
+      return {
+        input: {
+          x: node.position.x - 8, // -left-2 position
+          y: centerY
+        },
+        output: {
+          x: node.position.x + 88, // -right-2 position (80px + 8px)
+          y: centerY
+        }
+      };
+    } else {
+      // Regular node: width is 112px (w-28), height 80px (h-20)
+      // Input port is at -left-2 (-8px from left edge)
+      // Output port is at -right-2 (-8px from right edge, so +120px from left edge)
+      return {
+        input: {
+          x: node.position.x - 8, // -left-2 position
+          y: centerY
+        },
+        output: {
+          x: node.position.x + 120, // -right-2 position (112px + 8px)
+          y: centerY
+        }
+      };
+    }
   };
 
   const createPath = (start: { x: number; y: number }, end: { x: number; y: number }) => {

@@ -155,7 +155,7 @@ export function WorkflowNodeComponent({
           
           {/* Output connection point on the right edge */}
           <div 
-            className="absolute -right-1 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-gray-500 hover:bg-gray-600 rounded-full border border-background cursor-pointer transition-all duration-200 hover:scale-110 shadow-sm"
+            className="absolute -right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-gray-500 hover:bg-gray-600 rounded-full border-2 border-background cursor-pointer transition-all duration-200 hover:scale-110 shadow-md"
             title="Output"
           />
 
